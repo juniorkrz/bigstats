@@ -633,6 +633,11 @@ $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
               </a>
             </li>
             <li class="nav-item">
+              <a href="https://github.com/juniorkrz/bigstats" target="_blank" class="nav-link">
+                GIT
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="https://github.com/juniorkrz" target="_blank" class="nav-link">
                 Krz
               </a>
