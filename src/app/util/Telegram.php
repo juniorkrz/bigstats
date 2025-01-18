@@ -2,8 +2,6 @@
 
 namespace App\util;
 
-require_once "../config.php";
-
 class Telegram
 {
 

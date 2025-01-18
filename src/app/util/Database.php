@@ -5,8 +5,6 @@ namespace App\util;
 use PDO;
 use PDOException;
 
-require_once "../config.php";
-
 class Database
 {
     private static ?PDO $pdo = null;
