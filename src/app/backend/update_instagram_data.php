@@ -4,7 +4,6 @@ namespace App\backend;
 
 use App\model\InstagramUser;
 use App\model\InstagramUserHistory;
-use App\model\Participante;
 use App\util\InstagramAPI;
 use App\util\Repository;
 use App\util\Telegram;
@@ -52,15 +51,21 @@ function logMessage($message, $sendTelegram = false)
 logMessage("Iniciando atualização de dados do Instagram, intervalo de $sleepTime segundos...", true);
 
 $instagramApi = new InstagramAPI();
-$repParticipante = new Repository(Participante::class);
 $repInstagramUser = new Repository(InstagramUser::class);
 $repInstagramUserHistory = new Repository(InstagramUserHistory::class);
 
-$participantes = $repParticipante->findAll();
+// Buscar participantes que não atualizam a mais de 30 minutos
+$now = date('Y-m-d H:i:s');
+$thirtyMinutesAgo = date('Y-m-d H:i:s', strtotime('-30 minutes', strtotime($now)));
+$instagramUsers = $repInstagramUser->findByQuery(
+    "SELECT * FROM instagram_user WHERE updated_at < :thirtyMinutesAgo ORDER BY updated_at;",
+    ['thirtyMinutesAgo' => $thirtyMinutesAgo]
+);
+
 
 try {
-    foreach ($participantes as $participante /* @var $participante Participante */) {
-        $username = $participante->instagram;
+    foreach ($instagramUsers as $instagramUser /* @var $instagramUser InstagramUser */) {
+        $username = $instagramUser->username;
         $instagramUser = $instagramApi->getUserData($username);
 
         if (!$instagramUser) {
