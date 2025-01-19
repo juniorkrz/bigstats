@@ -62,6 +62,13 @@ class InstagramAPI
         $response = curl_exec($curl);
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $error = curl_error($curl);
+
+        if (!empty($error)) {
+            echo var_export($error, true) . PHP_EOL;
+            echo var_export($response, true) . PHP_EOL;
+            echo var_export($httpCode, true) . PHP_EOL;
+        }
+
         curl_close($curl);
 
         // Atualiza o uso da conta
