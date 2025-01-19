@@ -16,7 +16,7 @@ if (isset($argv[1])) {
     exit;
 }
 
-require_once "../config.php";
+require_once __DIR__ . "/../config.php";
 
 // Definir o nome do arquivo de log como o nome do script atual
 $runId = uniqid();
@@ -33,6 +33,7 @@ function logMessage($message, $sendTelegram = false)
 
     // Criar a mensagem com a data, hora e o conteúdo
     $logEntry = "[$dateTime][$runId] $message";
+    echo $logEntry . PHP_EOL;
 
     // Abrir o arquivo de log em modo de escrita
     $file = fopen($logFile, 'a');
