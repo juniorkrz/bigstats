@@ -31,9 +31,24 @@ function somarHistoricoInstagram($historicoA, $historicoB)
     return $historicoCombinado;
 }
 
+function findInstagramIdByUsername($username)
+{
+    $repInstagramUser = new Repository(InstagramUser::class);
+    $repInstagramUser->sample->username = $username;
+    $repInstagramUser->findBySample();
+    $instagramUser = $repInstagramUser->getFirst();
+
+    if (!$instagramUser) {
+        return null;
+    }
+
+    return $instagramUser->instagram_id;
+}
+
 function obterHistoricoInstagram($username)
 {
     $repInstagramUserHistory = new Repository(InstagramUserHistory::class);
+    $instagramId = findInstagramIdByUsername($username);
     // TODO: Limitar resultados para 7 dias?
     $query = "
         SELECT iuh.*
@@ -43,15 +58,15 @@ function obterHistoricoInstagram($username)
                 DATE(created_at) AS record_date,
                 MAX(created_at) AS max_created_at
             FROM instagram_user_history
-            WHERE username = :username
+            WHERE instagram_id = :instagram_id
             GROUP BY DATE(created_at)
         ) recent ON DATE(iuh.created_at) = recent.record_date
                 AND iuh.created_at = recent.max_created_at
-        WHERE iuh.username = :username;
+        WHERE iuh.instagram_id = :instagram_id;
     ";
 
     // Executa a consulta com o parâmetro seguro
-    $repInstagramUserHistory->findByQuery($query, ['username' => $username]);
+    $repInstagramUserHistory->findByQuery($query, ['instagram_id' => $instagramId]);
 
     $history = [];
 
