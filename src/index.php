@@ -207,6 +207,14 @@ $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
         <div class="spinner"></div>
       </div>
       <div id="stats" class="content d-none animate__animated animate__fadeIn">
+        <div class="participantes d-flex justify-content-center align-items-center mb-3">
+          <div class="row w-100 d-flex justify-content-center align-items-center">
+            <!-- <div class="duo">
+              <img class="mx-1" src="./assets/img/default-avatar.png" alt="">
+              <img class="mx-1" src="./assets/img/default-avatar.png" alt="">
+            </div> -->
+          </div>
+        </div>
         <div class="row">
           <div class="col-lg-4">
             <div class="card card-chart">

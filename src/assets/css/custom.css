@@ -63,3 +63,32 @@ a:hover {
 }
 
 /* loading spinner end */
+
+.duo img {
+  width: 44px;
+  border-radius: 50%;
+  padding: 2px;
+  border: 3px solid #27293d;
+}
+
+.duo {
+  border: 5px solid transparent;
+  border-radius: 25px;
+  background: linear-gradient(45deg, #3358f4, #00d4ff);
+  background-clip: padding-box;
+  padding: 5px;
+  cursor: pointer;
+  filter: brightness(75%);
+  transform: scale(1);
+  transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; /* Transição única */
+}
+
+.duo.active,
+.duo:hover {
+  filter: brightness(100%);
+  transform: scale(1.1);
+}
+
+.rounded-image {
+  border-radius: 50%;
+}

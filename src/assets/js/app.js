@@ -1,6 +1,23 @@
-var duplas = [];
-var charts = {}; // Referências para os gráficos
+let duplas = [];
+let charts = {};
+const loopTime = 15000;
+let intervalId;
+let duplaIndex = 0;
 
+// Inicia o loop que exibe as duplas
+const iniciarLoop = () => {
+    intervalId = setInterval(() => {
+        if (duplaIndex >= duplas.length) duplaIndex = 0;
+        exibirDupla(duplas[duplaIndex]);
+    }, loopTime);
+}
+
+// Pausa o loop
+const pausarLoop = () => {
+    clearInterval(intervalId);
+}
+
+// Obtém as duplas do servidor
 const obterDuplas = async () => {
     try {
         const response = await $.ajax({
@@ -21,14 +38,24 @@ const obterDuplas = async () => {
 };
 
 const exibirDupla = (dupla) => {
+
+    // Remove a classe .active de todas as duplas
+    $('.duo').removeClass('active');
+
+    // Adiciona a classe .active à dupla atual
+    const duoElement = $(`.duo[data-duo-index="${duplaIndex}"]`);
+    duoElement.addClass('active');
+
     exibirParticipante(dupla.participanteA, "participanteA");
     exibirParticipante(dupla.participanteB, "participanteB");
     exibirParticipante(dupla, "dupla");
 
-    // Atualizar gráficos de cada participante
+    // Atualiza gráficos
     updateChart("chartParticipanteA", dupla.participanteA.historicoInstagram);
     updateChart("chartParticipanteB", dupla.participanteB.historicoInstagram);
     updateChart("chartDupla", dupla.historicoInstagram);
+
+    duplaIndex++;
 };
 
 const createChart = (chartId) => {
@@ -116,9 +143,7 @@ const updateChart = (chartId, historicoInstagram) => {
     const labels = historicoInstagram.map(entry => entry.day); // Presumindo que os dias já estão formatados no backend
     const dataPoints = historicoInstagram.map(entry => entry.followers); // Manter os valores numéricos para o gráfico
 
-    if (!charts[chartId]) {
-        charts[chartId] = createChart(chartId);
-    }
+    if (!charts[chartId]) charts[chartId] = createChart(chartId);
 
     const chart = charts[chartId];
     chart.data.labels = labels;
@@ -126,6 +151,7 @@ const updateChart = (chartId, historicoInstagram) => {
     chart.update(); // Atualizar o gráfico
 };
 
+// Exibe informações de um participante
 const exibirParticipante = (participante, index) => {
     $(`.${index}`).each(function () {
         const key = $(this).attr('data');
@@ -150,6 +176,26 @@ const exibirParticipante = (participante, index) => {
 
 
 async function startApp() {
+    await obterDuplas();
+
+    duplas.forEach((dupla, i) => {
+        $('.participantes .row').append(`
+            <div class="duo mx-1" data-duo-index="${i}">
+                <img class="mr-1" src="data:image/png;base64,${dupla.participanteA.foto}" alt="Participante A">
+                <img class="" src="data:image/png;base64,${dupla.participanteB.foto}" alt="Participante B">
+            </div>
+        `);
+    });
+
+    // Evento de clique em .duo para pausar o loop
+    $('.duo').click(function (e) {
+        e.preventDefault();
+        pausarLoop();
+        duplaIndex = $(this).data('duo-index');
+        exibirDupla(duplas[duplaIndex]);
+        iniciarLoop();
+    });
+
     $('.btn-instagram').click(function (e) {
         e.preventDefault();
         window.open($(this).attr('href'), '_blank');
@@ -162,17 +208,10 @@ async function startApp() {
     // Exibir uma dupla a cada 5 segundos
     let duplaIndex = 0;
     exibirDupla(duplas[duplaIndex]);
-    duplaIndex++;
+    iniciarLoop();
 
     $('.avatar').removeClass('d-none');
-    $('.spinner').addClass('animate__animated animate__fadeOut')
-    $('#loader').removeClass('d-flex').addClass('d-none'); // Esconde o loader
-
-    $('#stats')
-      .removeClass('d-none') // Remove d-none para torná-lo visível
-
-    setInterval(() => {
-        exibirDupla(duplas[duplaIndex]);
-        duplaIndex = (duplaIndex + 1) % duplas.length;
-    }, 15000);
+    $('.spinner').addClass('animate__animated animate__fadeOut');
+    $('#loader').removeClass('d-flex').addClass('d-none');
+    $('#stats').removeClass('d-none');
 }
