@@ -123,6 +123,7 @@ function obterParticipante($id)
         "nome" => $participante->nome,
         "grupo" => $participante->grupo,
         "instagram" => $participante->instagram,
+        "instagram_id" => $dadosInstagram->instagram_id,
         "detalhes" => $participante->detalhes,
         "seguidores" => $dadosInstagram->followers_count,
         "foto" => $dadosInstagram->profile_pic_base64,
@@ -156,8 +157,8 @@ function obterDuplas()
         $participanteB = $participantesDupla->participanteB;
 
         // Obter históricos de Instagram de cada participante
-        $historicoInstagramA = obterHistoricoInstagram($participanteA->instagram);
-        $historicoInstagramB = obterHistoricoInstagram($participanteB->instagram);
+        $historicoInstagramA = $participanteA->historicoInstagram;
+        $historicoInstagramB = $participanteB->historicoInstagram;
 
         // Somar os históricos dos dois participantes
         $historicoInstagramDupla = somarHistoricoInstagram($historicoInstagramA, $historicoInstagramB);
