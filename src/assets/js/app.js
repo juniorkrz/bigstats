@@ -201,12 +201,26 @@ async function startApp() {
         window.open($(this).attr('href'), '_blank');
     });
 
-    //console.log('Página carregada');
-    await obterDuplas();
-    //console.log('Duplas carregadas:', duplas);
+    $('.avatar').click(function () {
+        const dupla = duplas[duplaIndex - 1];
+        const participante = $(this).hasClass('participanteA') ? dupla.participanteA : dupla.participanteB;
 
-    // Exibir uma dupla a cada 5 segundos
-    let duplaIndex = 0;
+            Swal.fire({
+                title: `${participante.nome}`,
+                text: participante.detalhes,
+                imageUrl: `data:image/png;base64,${participante.foto}`,
+                imageWidth: 150,
+                imageHeight: 150,
+                imageAlt: participante.nome,
+                footer: `${participante.grupo} | Seguidores: ${participante.seguidores.toLocaleString('pt-BR')} | @${participante.instagram}`,
+                confirmButtonText: 'Fechar',
+                customClass: {
+                    image: 'rounded-image'  // Adiciona uma classe personalizada à imagem
+                }
+            });
+    });
+
+    // Inicializa a exibição inicial e inicia o loop
     exibirDupla(duplas[duplaIndex]);
     iniciarLoop();
 

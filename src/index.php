@@ -40,6 +40,7 @@ $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
   <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
   <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
   <!-- Nucleo Icons -->
   <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
   <!-- CSS Files -->
@@ -717,6 +718,7 @@ $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
   <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="./assets/js/black-dashboard.js?v=1.0.0"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
   <!-- <script src="./assets/demo/demo.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="./assets/js/app.js"></script>
   <script>
     $(document).ready(function() {
