@@ -632,7 +632,7 @@ $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
         <div class="container-fluid">
           <ul class="nav">
             <li class="nav-item">
-              <a href="javascript:void(0)" class="nav-link">
+              <a href="./index.php" class="nav-link">
               <?php echo $appName ?>
               </a>
             </li>
