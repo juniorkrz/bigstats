@@ -60,7 +60,7 @@ $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
             BS
           </a>
           <a href="javascript:void(0)" class="simple-text logo-normal">
-          <?php echo $appName ?>
+            <?php echo $appName ?>
           </a>
         </div>
         <ul class="nav">
@@ -255,26 +255,26 @@ $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
                     <div data="blue" class="block block-two"></div>
                     <div data="blue" class="block block-three"></div>
                     <div data="blue" class="block block-four"></div>
-                    <a href="javascript:void(0)">
-                      <img class="avatar participanteA d-none" data="foto" alt="...">
-                      <h5 class="title participanteA" data="nome"></h5>
-                    </a>
-                    <!-- <p class="description participanteA" data="ocupacao">
-                      Arquiteto | Empresário
-                    </p> -->
+                    <div class="profile-image-wrapper">
+                      <a href="javascript:void(0)" class="profile-wrapper">
+                        <img class="avatar participanteA d-none" data="foto" alt="...">
+                      </a>
+                      <img src="./assets/img/verificado.webp" class="verified-badge d-none participanteA" data="verificado" alt="Verificado">
+                    </div>
+                    <h5 class="title participanteA" data="nome"></h5>
                     <button href="javascript:void(0)" class="btn btn-icon btn-round btn-instagram participanteA" data="instagram">
                       <i class="fab fa-instagram text-danger"></i>
                     </button>
                   </div>
                   <!-- Segundo perfil -->
                   <div class="author text-center">
-                    <a href="javascript:void(0)">
-                      <img class="avatar participanteB d-none" data="foto" alt="...">
-                      <h5 class="title participanteB" data="nome"></h5>
-                    </a>
-                    <!-- <p class="description participanteB" data="ocupacao">
-                      Ator | Cantor
-                    </p> -->
+                    <div class="profile-image-wrapper">
+                      <a href="javascript:void(0)" class="profile-wrapper">
+                        <img class="avatar participanteB d-none" data="foto" alt="...">
+                      </a>
+                      <img src="./assets/img/verificado.webp" class="verified-badge d-none participanteB" data="verificado" alt="Verificado">
+                    </div>
+                    <h5 class="title participanteB" data="nome"></h5>
                     <button href="javascript:void(0)" class="btn btn-icon btn-round btn-instagram participanteB" data="instagram">
                       <i class="fab fa-instagram text-danger"></i>
                     </button>
@@ -633,7 +633,7 @@ $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
           <ul class="nav">
             <li class="nav-item">
               <a href="./index.php" class="nav-link">
-              <?php echo $appName ?>
+                <?php echo $appName ?>
               </a>
             </li>
             <li class="nav-item">

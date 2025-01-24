@@ -92,3 +92,25 @@ a:hover {
 .rounded-image {
   border-radius: 50%;
 }
+
+/* selo verificado start */
+
+.profile-image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.verified-badge {
+  position: absolute;
+  bottom: 15px;
+  right: 10px;
+  width: 35px;
+  height: 35px;
+}
+
+.verified-badge-modal {
+  width: 35px;
+  height: 35px;
+}
+
+/* selo verificado end */

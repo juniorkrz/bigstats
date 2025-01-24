@@ -126,6 +126,7 @@ function obterParticipante($id)
         "instagram_id" => $dadosInstagram->instagram_id,
         "detalhes" => $participante->detalhes,
         "seguidores" => $dadosInstagram->followers_count,
+        "verificado" => $dadosInstagram->is_verified,
         "foto" => $dadosInstagram->profile_pic_base64,
         "historicoInstagram" => $historicoInstagram
     );

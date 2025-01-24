@@ -158,6 +158,12 @@ const exibirParticipante = (participante, index) => {
 
         if (key === 'instagram') {
             $(this).attr('href', 'https://www.instagram.com/' + participante[key]);
+        } else if (key === 'verificado') {
+            if (participante[key]) {
+                $(this).removeClass('d-none');
+            } else {
+                $(this).addClass('d-none');
+            }
         } else if (key === 'foto') {
             // Adicionar o efeito ao alterar o src da foto
             const $img = $(this);
@@ -204,9 +210,10 @@ async function startApp() {
     $('.avatar').click(function () {
         const dupla = duplas[duplaIndex - 1];
         const participante = $(this).hasClass('participanteA') ? dupla.participanteA : dupla.participanteB;
+        const badge = participante.verificado ? ' <img src="./assets/img/verificado.webp" class="verified-badge-modal" alt="Verificado">' : '';
 
             Swal.fire({
-                title: `${participante.nome}`,
+                title: `${participante.nome}${badge}`,
                 text: participante.detalhes,
                 imageUrl: `data:image/png;base64,${participante.foto}`,
                 imageWidth: 150,
