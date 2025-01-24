@@ -9,6 +9,7 @@ class InstagramUser
     public $full_name;
     public $biography;
     public $followers_count;
+    public $is_verified;
     public $profile_picture_url;
     public $profile_pic_base64;
     public $created_at;
@@ -20,6 +21,7 @@ class InstagramUser
         $full_name = null,
         $biography = null,
         $followers_count = null,
+        $is_verified = null,
         $profile_picture_url = null,
         $profile_pic_base64 = null,
         $created_at = null,
@@ -30,6 +32,7 @@ class InstagramUser
         $this->full_name = $full_name;
         $this->biography = $biography;
         $this->followers_count = $followers_count;
+        $this->is_verified = $is_verified;
         $this->profile_picture_url = $profile_picture_url;
         $this->profile_pic_base64 = $profile_pic_base64;
         $this->created_at = $created_at;
@@ -51,6 +54,7 @@ class InstagramUser
             $data->user->full_name,
             $data->user->biography,
             $data->user->edge_followed_by->count,
+            $data->user->is_verified,
             $profilePicUrl,
             $profilePicBase64,
             null,
