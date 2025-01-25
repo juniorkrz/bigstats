@@ -261,7 +261,7 @@ async function startApp() {
 
     // Modal com informações de um participante
     $('.avatar').click(function () {
-        const dupla = duplas[duplaIndex - 1];
+        const dupla = duplas[duplaIndex];
         const participante = $(this).hasClass('participanteA') ? dupla.participanteA : dupla.participanteB;
         const badge = participante.verificado ? ' <img src="./assets/img/verificado.webp" class="verified-badge-modal" alt="Verificado">' : '';
 
