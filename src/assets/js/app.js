@@ -152,30 +152,51 @@ const updateChart = (chartId, historicoInstagram) => {
 };
 
 // Exibe informações de um participante
+const KeyAction = {
+    INSTAGRAM: 'instagram',
+    VERIFICADO: 'verificado',
+    FOTO: 'foto',
+    SEGUIDORES: 'seguidores',
+};
+
 const exibirParticipante = (participante, index) => {
     $(`.${index}`).each(function () {
         const key = $(this).attr('data');
 
-        if (key === 'instagram') {
-            $(this).attr('href', 'https://www.instagram.com/' + participante[key]);
-        } else if (key === 'verificado') {
-            if (participante[key]) {
-                $(this).removeClass('d-none');
-            } else {
-                $(this).addClass('d-none');
-            }
-        } else if (key === 'foto') {
-            // Adicionar o efeito ao alterar o src da foto
-            const $img = $(this);
-            $img.fadeOut(300, function () { // Reduz a opacidade a 0 em 300ms
-                $img.attr('src', "data:image/png;base64," + participante[key]); // Altera o src
-                $img.fadeIn(300); // Restaura a opacidade a 1 em 300ms
-            });
-        } else if (key === 'seguidores') {
-            // Formatar seguidores com separador de milhar
-            $(this).html(participante[key].toLocaleString('pt-BR'));
-        } else {
-            $(this).html(participante[key]);
+        switch (key) {
+            case KeyAction.INSTAGRAM:
+                $(this).attr('href', 'https://www.instagram.com/' + participante[key]);
+                break;
+
+            case KeyAction.VERIFICADO:
+                if (participante[key]) {
+                    $(this).removeClass('d-none');
+                } else {
+                    $(this).addClass('d-none');
+                }
+                break;
+
+            case KeyAction.FOTO:
+                const $img = $(this);
+                $img.fadeOut(300, function () {
+                    $img.attr('src', "data:image/png;base64," + participante[key]);
+                    $img.fadeIn(300);
+                });
+
+                if (participante.eliminado) {
+                    $(this).addClass('eliminado');
+                } else {
+                    $(this).removeClass('eliminado');
+                }
+                break;
+
+            case KeyAction.SEGUIDORES:
+                $(this).html(participante[key].toLocaleString('pt-BR'));
+                break;
+
+            default:
+                $(this).html(participante[key]);
+                break;
         }
     });
 };
@@ -184,11 +205,12 @@ const exibirParticipante = (participante, index) => {
 async function startApp() {
     await obterDuplas();
 
+    // Cria os botões das duplas
     duplas.forEach((dupla, i) => {
         $('.participantes .row').append(`
             <div class="duo mx-1" data-duo-index="${i}">
-                <img class="mr-1" src="data:image/png;base64,${dupla.participanteA.foto}" alt="Participante A">
-                <img class="" src="data:image/png;base64,${dupla.participanteB.foto}" alt="Participante B">
+                <img class="${dupla.participanteB.eliminado ? 'eliminado ' : ''}mr-1" src="data:image/png;base64,${dupla.participanteA.foto}" alt="Participante A">
+                <img class="${dupla.participanteB.eliminado ? 'eliminado' : ''}" src="data:image/png;base64,${dupla.participanteB.foto}" alt="Participante B">
             </div>
         `);
     });

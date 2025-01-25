@@ -121,6 +121,7 @@ function obterParticipante($id)
     $dadosParticipante = array(
         "id" => $participante->id,
         "nome" => $participante->nome,
+        "eliminado" => $participante->eliminado,
         "grupo" => $participante->grupo,
         "instagram" => $participante->instagram,
         "instagram_id" => $dadosInstagram->instagram_id,

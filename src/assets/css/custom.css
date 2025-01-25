@@ -114,3 +114,15 @@ a:hover {
 }
 
 /* selo verificado end */
+
+/* participante eliminado start */
+.eliminado {
+  filter: grayscale(100%);
+  transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; /* Transição única */
+}
+
+.eliminado:hover {
+  filter: grayscale(0%);
+}
+
+/* participante eliminado end */
