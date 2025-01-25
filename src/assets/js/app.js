@@ -10,9 +10,12 @@ var lastUpdate = 0;
 // Inicia o loop que exibe as duplas
 const iniciarLoop = () => {
     intervalId = setInterval(() => {
+        duplaIndex++;
+
         if (duplaIndex >= duplas.length) {
             duplaIndex = 0
         }
+
         exibirDupla(duplas[duplaIndex]);
     }, showDuoTime * 1000);
 }
@@ -45,6 +48,7 @@ const obterDuplas = async () => {
 };
 
 const exibirDupla = (dupla) => {
+    console.log(`[ Big Stats ]: Exibindo dupla ${duplaIndex + 1} de ${duplas.length}`,);
 
     // Remove a classe .active de todas as duplas
     $('.duo').removeClass('active');
@@ -61,8 +65,6 @@ const exibirDupla = (dupla) => {
     updateChart("chartParticipanteA", dupla.participanteA.historicoInstagram);
     updateChart("chartParticipanteB", dupla.participanteB.historicoInstagram);
     updateChart("chartDupla", dupla.historicoInstagram);
-
-    duplaIndex++;
 };
 
 const createChart = (chartId) => {
@@ -185,10 +187,15 @@ const exibirParticipante = (participante, index) => {
 
             case KeyAction.FOTO:
                 const $img = $(this);
-                $img.fadeOut(300, function () {
+
+                if ($('#autoSwitch').is(':checked')) {
+                    $img.fadeOut(300, function () {
+                        $img.attr('src', "data:image/png;base64," + participante[key]);
+                        $img.fadeIn(300);
+                    });
+                } else {
                     $img.attr('src', "data:image/png;base64," + participante[key]);
-                    $img.fadeIn(300);
-                });
+                }
 
                 if (participante.eliminado) {
                     $(this).addClass('eliminado');
@@ -290,5 +297,10 @@ async function startApp() {
     // Loop para atualizar os dados
     setInterval(() => {
         obterDuplas();
+
+        if (!$('#autoSwitch').is(':checked')) {
+            exibirDupla(duplas[duplaIndex]);
+        }
+
     }, dataUpdateInterval * 1000);
 }
