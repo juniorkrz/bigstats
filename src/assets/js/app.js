@@ -1,15 +1,21 @@
+const showDuoTime = 15;// Tempo em segundos que exibe cada dupla
+const dataUpdateInterval = 30;// Tempo mínimo em segundos entre atualizações dos dadoss
+
 let duplas = [];
 let charts = {};
-const loopTime = 15000;
 let intervalId;
 let duplaIndex = 0;
+var lastUpdate = 0;
 
 // Inicia o loop que exibe as duplas
 const iniciarLoop = () => {
     intervalId = setInterval(() => {
-        if (duplaIndex >= duplas.length) duplaIndex = 0;
+        if (duplaIndex >= duplas.length) {
+            duplaIndex = 0
+            obterDuplas();
+        }
         exibirDupla(duplas[duplaIndex]);
-    }, loopTime);
+    }, showDuoTime * 1000);
 }
 
 // Pausa o loop
@@ -19,6 +25,12 @@ const pausarLoop = () => {
 
 // Obtém as duplas do servidor
 const obterDuplas = async () => {
+    // Previne atualização em um intervalo curto
+    const now = Date.now();
+    if (now - lastUpdate < dataUpdateInterval * 1000) {
+        return;
+    }
+
     try {
         const response = await $.ajax({
             url: 'app/ajax/misc.php',
@@ -29,6 +41,8 @@ const obterDuplas = async () => {
 
         if (response.status) {
             duplas = response.data;
+            lastUpdate = Date.now();
+            console.log(`[ Big Stats ]: Dados atualizados em ${new Date(lastUpdate).toLocaleString()}`);
         } else {
             console.error('Erro ao obter as duplas:', response.message || 'Resposta inesperada.');
         }
@@ -205,6 +219,15 @@ const exibirParticipante = (participante, index) => {
 async function startApp() {
     await obterDuplas();
 
+    // Switch para pausar a exibição de duplas automática
+    $('#autoSwitch').on('change', function () {
+        if (this.checked) {
+            iniciarLoop();
+        } else {
+            pausarLoop();
+        }
+    })
+
     // Cria os botões das duplas
     duplas.forEach((dupla, i) => {
         $('.participantes .row').append(`
@@ -215,13 +238,18 @@ async function startApp() {
         `);
     });
 
-    // Evento de clique em .duo para pausar o loop
+    // Evento de clique em .duo para pausar o loop e exibir a dupla
     $('.duo').click(function (e) {
-        e.preventDefault();
-        pausarLoop();
-        duplaIndex = $(this).data('duo-index');
-        exibirDupla(duplas[duplaIndex]);
-        iniciarLoop();
+        if ($('#autoSwitch').is(':checked')) {
+            e.preventDefault();
+            pausarLoop();
+            duplaIndex = $(this).data('duo-index');
+            exibirDupla(duplas[duplaIndex]);
+            iniciarLoop();
+        } else {
+            duplaIndex = $(this).data('duo-index');
+            exibirDupla(duplas[duplaIndex]);
+        }
     });
 
     $('.btn-instagram').click(function (e) {
@@ -229,6 +257,7 @@ async function startApp() {
         window.open($(this).attr('href'), '_blank');
     });
 
+    // Modal com informações de um participante
     $('.avatar').click(function () {
         const dupla = duplas[duplaIndex - 1];
         const participante = $(this).hasClass('participanteA') ? dupla.participanteA : dupla.participanteB;
@@ -251,7 +280,11 @@ async function startApp() {
 
     // Inicializa a exibição inicial e inicia o loop
     exibirDupla(duplas[duplaIndex]);
-    iniciarLoop();
+
+    // Inicia o loop se a opção de autoSwitch estiver marcada
+    if ($('#autoSwitch').is(':checked')) {
+        iniciarLoop();
+    }
 
     $('.avatar').removeClass('d-none');
     $('.spinner').addClass('animate__animated animate__fadeOut');

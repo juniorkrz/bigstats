@@ -72,6 +72,7 @@ a:hover {
 }
 
 .duo {
+  width: auto;
   border: 5px solid transparent;
   border-radius: 25px;
   background: linear-gradient(45deg, #3358f4, #00d4ff);
@@ -91,6 +92,7 @@ a:hover {
 
 .rounded-image {
   border-radius: 50%;
+  border: 3px solid #27293d;
 }
 
 /* selo verificado start */
@@ -126,3 +128,17 @@ a:hover {
 }
 
 /* participante eliminado end */
+
+
+/* switch start */
+
+.form-check-input {
+  cursor: pointer;
+}
+
+.form-check-label {
+  padding-left: 0px !important;
+  padding-right: 40px;
+}
+
+/* switch end */
