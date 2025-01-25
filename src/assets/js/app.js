@@ -12,7 +12,6 @@ const iniciarLoop = () => {
     intervalId = setInterval(() => {
         if (duplaIndex >= duplas.length) {
             duplaIndex = 0
-            obterDuplas();
         }
         exibirDupla(duplas[duplaIndex]);
     }, showDuoTime * 1000);
@@ -25,12 +24,6 @@ const pausarLoop = () => {
 
 // Obtém as duplas do servidor
 const obterDuplas = async () => {
-    // Previne atualização em um intervalo curto
-    const now = Date.now();
-    if (now - lastUpdate < dataUpdateInterval * 1000) {
-        return;
-    }
-
     try {
         const response = await $.ajax({
             url: 'app/ajax/misc.php',
@@ -113,7 +106,7 @@ const createChart = (chartId) => {
                 intersect: 0,
                 position: "nearest",
                 callbacks: {
-                    label: function(tooltipItem, data) {
+                    label: function (tooltipItem, data) {
                         const value = tooltipItem.yLabel;
                         return value.toLocaleString('pt-BR'); // Formatação do número no tooltip
                     }
@@ -131,7 +124,7 @@ const createChart = (chartId) => {
                     ticks: {
                         padding: 20,
                         fontColor: "#9a9a9a",
-                        callback: function(value) {
+                        callback: function (value) {
                             return value.toLocaleString('pt-BR'); // Formatação do número no eixo Y
                         }
                     }
@@ -143,9 +136,9 @@ const createChart = (chartId) => {
                         color: 'rgba(225,78,202,0.1)',
                         zeroLineColor: "transparent",
                     },
-                    ticks: { 
-                        padding: 20, 
-                        fontColor: "#9a9a9a" 
+                    ticks: {
+                        padding: 20,
+                        fontColor: "#9a9a9a"
                     }
                 }]
             }
@@ -217,6 +210,7 @@ const exibirParticipante = (participante, index) => {
 
 
 async function startApp() {
+    // Carregar as duplas pela primeira vez
     await obterDuplas();
 
     // Switch para pausar a exibição de duplas automática
@@ -252,6 +246,7 @@ async function startApp() {
         }
     });
 
+    // Evento de clique para abrir o link do Instagram
     $('.btn-instagram').click(function (e) {
         e.preventDefault();
         window.open($(this).attr('href'), '_blank');
@@ -263,19 +258,19 @@ async function startApp() {
         const participante = $(this).hasClass('participanteA') ? dupla.participanteA : dupla.participanteB;
         const badge = participante.verificado ? ' <img src="./assets/img/verificado.webp" class="verified-badge-modal" alt="Verificado">' : '';
 
-            Swal.fire({
-                title: `${participante.nome}${badge}`,
-                text: participante.detalhes,
-                imageUrl: `data:image/png;base64,${participante.foto}`,
-                imageWidth: 150,
-                imageHeight: 150,
-                imageAlt: participante.nome,
-                footer: `${participante.grupo} | Seguidores: ${participante.seguidores.toLocaleString('pt-BR')} | @${participante.instagram}`,
-                confirmButtonText: 'Fechar',
-                customClass: {
-                    image: 'rounded-image'  // Adiciona uma classe personalizada à imagem
-                }
-            });
+        Swal.fire({
+            title: `${participante.nome}${badge}`,
+            text: participante.detalhes,
+            imageUrl: `data:image/png;base64,${participante.foto}`,
+            imageWidth: 150,
+            imageHeight: 150,
+            imageAlt: participante.nome,
+            footer: `${participante.grupo} | Seguidores: ${participante.seguidores.toLocaleString('pt-BR')} | @${participante.instagram}`,
+            confirmButtonText: 'Fechar',
+            customClass: {
+                image: 'rounded-image'  // Adiciona uma classe personalizada à imagem
+            }
+        });
     });
 
     // Inicializa a exibição inicial e inicia o loop
@@ -286,8 +281,14 @@ async function startApp() {
         iniciarLoop();
     }
 
+    // Esconde o spinner e exibe as duplas quando o carregamento terminar
     $('.avatar').removeClass('d-none');
     $('.spinner').addClass('animate__animated animate__fadeOut');
     $('#loader').removeClass('d-flex').addClass('d-none');
     $('#stats').removeClass('d-none');
+
+    // Loop para atualizar os dados
+    setInterval(() => {
+        obterDuplas();
+    }, dataUpdateInterval * 1000);
 }
