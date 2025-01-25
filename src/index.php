@@ -19,6 +19,12 @@ require_once "app/config.php";
 $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
 $appVersion = $_ENV['APP_VERSION'] ?? '1.0.0';
 
+try {
+  $lastCommitHash = getLastCommitHash();
+} catch (Exception $e) {
+  $lastCommitHash = bin2hex(random_bytes(16));
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -46,8 +52,8 @@ $appVersion = $_ENV['APP_VERSION'] ?? '1.0.0';
   <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-  <link href="./assets/css/black-dashboard.css?v=<?php echo $appVersion ?>" rel="stylesheet" />
-  <link rel="stylesheet" href="./assets/css/custom.css?v=<?php echo $appVersion ?>">
+  <link href="./assets/css/black-dashboard.css?v=<?php echo $lastCommitHash ?>" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/custom.css?v=<?php echo $lastCommitHash ?>">
 </head>
 
 <body>
@@ -671,9 +677,9 @@ $appVersion = $_ENV['APP_VERSION'] ?? '1.0.0';
   <!--  Notifications Plugin    -->
   <!-- <script src="./assets/js/plugins/bootstrap-notify.js"></script> -->
   <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="./assets/js/black-dashboard.js?v=<?php echo $appVersion ?>"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
+  <script src="./assets/js/black-dashboard.js?v=<?php echo $lastCommitHash ?>"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
   <!-- <script src="./assets/demo/demo.js"></script> -->
-  <script src="./assets/js/app.js?v=<?php echo $appVersion ?>"></script>
+  <script src="./assets/js/app.js?v=<?php echo $lastCommitHash ?>"></script>
   <script>
     $(document).ready(function() {
       $().ready(function() {
