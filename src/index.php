@@ -17,6 +17,7 @@
 
 require_once "app/config.php";
 $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
+$appVersion = $_ENV['APP_VERSION'] ?? '1.0.0';
 
 ?>
 <!DOCTYPE html>
@@ -45,8 +46,8 @@ $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
   <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-  <link href="./assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
-  <link rel="stylesheet" href="./assets/css/custom.css">
+  <link href="./assets/css/black-dashboard.css?v=<?php echo $appVersion ?>" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/custom.css?v=<?php echo $appVersion ?>">
 </head>
 
 <body>
@@ -663,16 +664,16 @@ $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
   <script src="./assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
   <!--  Google Maps Plugin    -->
   <!-- Place this tag in your head or just before your close body tag. -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script> -->
   <!-- Chart JS -->
   <script src="./assets/js/plugins/chartjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!--  Notifications Plugin    -->
   <!-- <script src="./assets/js/plugins/bootstrap-notify.js"></script> -->
   <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="./assets/js/black-dashboard.js?v=1.0.0"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
+  <script src="./assets/js/black-dashboard.js?v=<?php echo $appVersion ?>"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
   <!-- <script src="./assets/demo/demo.js"></script> -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="./assets/js/app.js"></script>
+  <script src="./assets/js/app.js?v=<?php echo $appVersion ?>"></script>
   <script>
     $(document).ready(function() {
       $().ready(function() {
