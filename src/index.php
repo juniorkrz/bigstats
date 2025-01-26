@@ -66,6 +66,18 @@ try {
       y.parentNode.insertBefore(t, y);
     })(window, document, "clarity", "script", "pzpx6tccj0");
   </script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-D5WGJ11JZN"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-D5WGJ11JZN');
+  </script>
 </head>
 
 <body>
