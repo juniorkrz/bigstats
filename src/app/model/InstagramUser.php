@@ -75,8 +75,15 @@ class InstagramUser
     // Função auxiliar para pegar a imagem e codificar em base64
     private static function getImageBase64(string $url): string
     {
+        $context = stream_context_create([
+            "ssl" => [
+                "verify_peer" => false,
+                "verify_peer_name" => false,
+            ]
+        ]);
+
         // Baixando a imagem da URL
-        $imageData = file_get_contents($url);
+        $imageData = file_get_contents($url, false, $context);
 
         // Convertendo a imagem para base64
         return base64_encode($imageData);
