@@ -41,104 +41,21 @@ try {
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicon/favicon-16x16.png">
   <link rel="manifest" href="./assets/manifest/site.webmanifest">
   <title>
-    <?php echo $appName ?> 2025 - Estatísticas
+    <?php echo "$appName 2025 - $pageTitle"?>
   </title>
-  <!--     Fonts and icons     -->
-  <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
-  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-  <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
-  <!-- Nucleo Icons -->
-  <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
-  <!-- CSS Files -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-  <link href="./assets/css/black-dashboard.css?v=<?php echo $lastCommitHash ?>" rel="stylesheet" />
-  <link rel="stylesheet" href="./assets/css/custom.css?v=<?php echo $lastCommitHash ?>">
-  <script type="text/javascript">
-    (function(c, l, a, r, i, t, y) {
-      c[a] = c[a] || function() {
-        (c[a].q = c[a].q || []).push(arguments)
-      };
-      t = l.createElement(r);
-      t.async = 1;
-      t.src = "https://www.clarity.ms/tag/" + i;
-      y = l.getElementsByTagName(r)[0];
-      y.parentNode.insertBefore(t, y);
-    })(window, document, "clarity", "script", "pzpx6tccj0");
-  </script>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-D5WGJ11JZN"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-
-    gtag('config', 'G-D5WGJ11JZN');
-  </script>
+  <!-- CSS -->
+  <?php require_once('./components/css.php'); ?>
+  <!-- Tags -->
+  <?php require_once('./components/tags.php'); ?>
 </head>
 
 <body>
   <div class="wrapper">
-    <div class="sidebar" data="blue">
-      <!--
-        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
-    -->
-      <div class="sidebar-wrapper">
-        <div class="logo">
-          <a href="javascript:void(0)" class="simple-text logo-mini">
-            BS
-          </a>
-          <a href="javascript:void(0)" class="simple-text logo-normal">
-            <?php echo $appName ?>
-          </a>
-        </div>
-        <ul class="nav">
-          <li class="active">
-            <a href="./index.php">
-              <i class="tim-icons icon-chart-pie-36"></i>
-              <p>Duplas</p>
-            </a>
-          </li>
-          <!-- <li>
-            <a href="./index.html">
-              <i class="tim-icons icon-chart-pie-36"></i>
-              <p>Ranking</p>
-            </a>
-          </li> -->
-        </ul>
-      </div>
-    </div>
+    <!-- Sidebar -->
+    <?php require_once('./components/sidebar.php'); ?>
     <div class="main-panel" data="blue">
       <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
-        <div class="container-fluid">
-          <div class="d-flex justify-content-between align-items-center w-100">
-            <div class="navbar-wrapper d-flex align-items-center">
-              <div class="navbar-toggle d-inline">
-                <button type="button" class="navbar-toggler">
-                  <span class="navbar-toggler-bar bar1"></span>
-                  <span class="navbar-toggler-bar bar2"></span>
-                  <span class="navbar-toggler-bar bar3"></span>
-                </button>
-              </div>
-              <a class="navbar-brand" href="javascript:void(0)">Estatísticas</a>
-            </div>
-            <div class="collapse navbar-collapse show" id="navigation">
-              <ul class="navbar-nav ml-auto d-flex">
-                <div class="form-check form-switch d-flex align-items-center flex-row-reverse">
-                  <!-- <label class="form-check-label" for="flexSwitchCheckChecked">Exibição automática</label> -->
-                  <input id="autoSwitch" class="form-check-input mb-1" type="checkbox" role="switch" checked="">
-                </div>
-                <li class="separator d-lg-none"></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </nav>
-      <!-- End Navbar -->
+      <?php require_once('./components/navbar.php'); ?>
       <div id="loader" class="content d-flex justify-content-center align-items-center">
         <div class="spinner"></div>
       </div>
@@ -240,39 +157,8 @@ try {
           </div>
         </div>
       </div>
-      <footer class="footer">
-        <div class="container-fluid">
-          <ul class="nav">
-            <li class="nav-item">
-              <a href="./index.php" class="nav-link">
-                <?php echo $appName ?>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="javascript:void(0)" class="nav-link">
-                Sobre
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="https://github.com/juniorkrz/bigstats" target="_blank" class="nav-link">
-                GIT
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="https://github.com/juniorkrz" target="_blank" class="nav-link">
-                Krz
-              </a>
-            </li>
-          </ul>
-          <div class="copyright">
-            ©
-            <script>
-              document.write(new Date().getFullYear())
-            </script> feito com <i class="tim-icons icon-heart-2"></i> por
-            <a href="https://github.com/juniorkrz" target="_blank">Krz</a>.
-          </div>
-        </div>
-      </footer>
+      <!-- Footer -->
+      <?php require_once('./components/footer.php'); ?>
     </div>
   </div>
   <!--   Core JS Files   -->
