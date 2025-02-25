@@ -23,4 +23,13 @@ if ($action == 'obterDuplas') {
     $result->data    = $duplas;
 }
 
+else if ($action == 'obterParticipantes') {
+    $participantes = obterParticipantes();
+    $success = !empty($participantes);
+
+    $result->status  = $success;
+    $result->message = $success ? "Participantes obtidos com sucesso." : "Nenhuma participante encontrado.";
+    $result->data    = $participantes;
+}
+
 echo json_encode($result);

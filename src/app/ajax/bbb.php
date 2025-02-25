@@ -6,7 +6,6 @@ use App\model\InstagramUserHistory;
 use App\model\Participante;
 use App\util\Repository;
 
-
 function somarHistoricoInstagram($historicoA, $historicoB)
 {
     // Criar um array para armazenar o histórico combinado
@@ -31,20 +30,47 @@ function somarHistoricoInstagram($historicoA, $historicoB)
     return $historicoCombinado;
 }
 
-/* deprecated */
-/* function findInstagramIdByUsername($username)
-{
-    $repInstagramUser = new Repository(InstagramUser::class);
-    $repInstagramUser->sample->username = $username;
-    $repInstagramUser->findBySample();
-    $instagramUser = $repInstagramUser->getFirst();
+function getInstagramHistoryByQuery($instagram_id, $query) {
+    $repInstagramUserHistory = new Repository(InstagramUserHistory::class);
+    $repInstagramUserHistory->findByQuery($query, ['instagram_id' => $instagram_id]);
+    $firstOccurrence = $repInstagramUserHistory->getFirst();
 
-    if (!$instagramUser) {
+    if (!$firstOccurrence) {
         return null;
     }
 
-    return $instagramUser->instagram_id;
-} */
+    return array(
+        "id" => $firstOccurrence->id,
+        "instagram_id" => $firstOccurrence->instagram_id,
+        "instagram" => $firstOccurrence->username,
+        "nome" => $firstOccurrence->full_name,
+        "seguidores" => $firstOccurrence->followers_count,
+        "data" => $firstOccurrence->created_at
+    );
+}
+
+function obterHistoricoUltimas24Hrs($instagram_id)
+{
+    $query = "
+    SELECT *
+    FROM instagram_user_history
+    WHERE instagram_id = :instagram_id
+    AND created_at >= CURDATE() - INTERVAL 1 DAY
+    AND created_at < CURDATE()
+    ORDER BY created_at DESC
+    LIMIT 1
+";
+
+
+    return getInstagramHistoryByQuery($instagram_id, $query);
+}
+
+function obterHistoricoInstagramMaisAntigo($instagram_id)
+{
+    $query = "SELECT * FROM instagram_user_history WHERE instagram_id = :instagram_id ORDER BY created_at LIMIT 0,1";
+
+    return getInstagramHistoryByQuery($instagram_id, $query);
+}
 
 function obterHistoricoInstagram($instagram_id)
 {
@@ -93,10 +119,8 @@ function obterHistoricoInstagram($instagram_id)
         ];
     }
 
-
     return $history;
 }
-
 
 function obterDadosInstagram($username)
 {
@@ -107,16 +131,9 @@ function obterDadosInstagram($username)
     return $repInstagramUser->getFirst();
 }
 
-function obterParticipante($id)
+function processarDadosParticipante($participante, $obterHistorico = true, $obterHistoricoMaisAntigo = false, $obterUltimas24Hrs = false)
 {
-    $repParticipante = new Repository(Participante::class);
-    $repParticipante->sample->id = $id;
-    $repParticipante->findBySample();
-
-    $participante = $repParticipante->getFirst();
-
     $dadosInstagram = obterDadosInstagram($participante->instagram);
-    $historicoInstagram = obterHistoricoInstagram($dadosInstagram->instagram_id);
 
     $dadosParticipante = array(
         "id" => $participante->id,
@@ -129,10 +146,35 @@ function obterParticipante($id)
         "seguidores" => $dadosInstagram->followers_count,
         "verificado" => $dadosInstagram->is_verified,
         "foto" => $dadosInstagram->profile_pic_base64,
-        "historicoInstagram" => $historicoInstagram
     );
 
+    if ($obterHistorico) {
+        $historicoInstagram = obterHistoricoInstagram($dadosInstagram->instagram_id);
+        $dadosParticipante['historicoInstagram'] = $historicoInstagram;
+    }
+
+    if ($obterHistoricoMaisAntigo) {
+        $historicoInstagramMaisAntigo = obterHistoricoInstagramMaisAntigo($dadosInstagram->instagram_id);
+        $dadosParticipante['historicoInstagramMaisAntigo'] = $historicoInstagramMaisAntigo;
+    }
+
+    if ($obterUltimas24Hrs) {
+        $ultimas24Hrs = obterHistoricoUltimas24Hrs($dadosInstagram->instagram_id);
+        $dadosParticipante['historicoUltimas24Hrs'] = $ultimas24Hrs;
+    }
+
     return $dadosParticipante;
+}
+
+function obterParticipante($id)
+{
+    $repParticipante = new Repository(Participante::class);
+    $repParticipante->sample->id = $id;
+    $repParticipante->findBySample();
+
+    $participante = $repParticipante->getFirst();
+
+    return processarDadosParticipante($participante);
 }
 
 function obterPartipantesDupla(Dupla $dupla)
@@ -179,4 +221,27 @@ function obterDuplas()
     }
 
     return $duplas;
+}
+
+function obterParticipantes()
+{
+    $participantes = [];
+
+    $repParticipante = new Repository(Participante::class);
+    $repParticipante->findAll();
+
+    $obterHistorico = false;
+    $obterHistoricoMaisAntigo = true;
+    $obterHistoricoUltimas24Hrs = false;
+
+    foreach ($repParticipante->objects as $participante) {
+        $participantes[] = processarDadosParticipante(
+            $participante,
+            $obterHistorico,
+            $obterHistoricoMaisAntigo,
+            $obterHistoricoUltimas24Hrs
+        );
+    }
+
+    return $participantes;
 }

@@ -142,3 +142,15 @@ a:hover {
 }
 
 /* switch end */
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+#participantsTable thead th {
+  cursor: pointer;
+}
+
+#participantsTable thead th:hover {
+  color: #5e72e4 !important;
+}
