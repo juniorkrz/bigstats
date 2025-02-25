@@ -75,7 +75,6 @@ function obterHistoricoInstagramMaisAntigo($instagram_id)
 function obterHistoricoInstagram($instagram_id)
 {
     $repInstagramUserHistory = new Repository(InstagramUserHistory::class);
-    // TODO: Limitar resultados para 7 dias?
     $query = "
         SELECT iuh.*
         FROM instagram_user_history iuh
@@ -88,7 +87,8 @@ function obterHistoricoInstagram($instagram_id)
             GROUP BY DATE(created_at)
         ) recent ON DATE(iuh.created_at) = recent.record_date
                 AND iuh.created_at = recent.max_created_at
-        WHERE iuh.instagram_id = :instagram_id;
+        WHERE iuh.instagram_id = :instagram_id
+        AND iuh.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY);
     ";
 
     // Executa a consulta com o parâmetro seguro
