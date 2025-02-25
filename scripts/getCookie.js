@@ -4,8 +4,8 @@ function getCookies() {
 }
 
 // Função para copiar os cookies para a área de transferência
-function copyCookiesToClipboard() {
-    const cookies = getCookies();
+function copyCookiesToClipboard(c) {
+    const cookies = c || getCookies();
     const success = cookies.includes('ds_user_id');
     const color = success ? '#4CAF50' : '#EF2020';
 
@@ -119,8 +119,8 @@ COMMIT;`;
 }
 
 // Função para verificar se o usuário está no Instagram
-function getInstagramCookie() {
-    if (window.location.hostname !== 'www.instagram.com') {
+function getInstagramCookie(c = null) {
+    if (!c && window.location.hostname !== 'www.instagram.com') {
         // Mostrar um aviso e redirecionar
         alert('Você não está no Instagram. Redirecionando para Instagram...');
 
@@ -130,9 +130,10 @@ function getInstagramCookie() {
         }, 2000);
     } else {
         // Se já estiver no Instagram, copiar os cookies e exibir a mensagem
-        copyCookiesToClipboard();
+        copyCookiesToClipboard(c);
     }
 }
 
 // Chamar a função de verificação
-getInstagramCookie();
+const cookiesStr = '';// Cole aqui os cookies
+getInstagramCookie(cookiesStr);
