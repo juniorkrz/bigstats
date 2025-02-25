@@ -18,6 +18,7 @@
 require_once "app/config.php";
 $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
 $appVersion = $_ENV['APP_VERSION'] ?? '1.0.0';
+$pageTitle = 'Duplas';
 
 try {
   $lastCommitHash = getLastCommitHash();
@@ -225,6 +226,20 @@ try {
 
         $('.dark-badge').click(function() {
           $('body').removeClass('white-content');
+        });
+
+        // Active Navigation
+        $('.sidebar li a').each(function() {
+          let currentPage = window.location.pathname.split("/").pop();
+
+          if (currentPage == "") {
+            currentPage = "index.php";
+          }
+
+          const thisPage = this.href.split("/").pop();
+          if (currentPage == thisPage) {
+            $(this).closest('li').addClass('active');
+          }
         });
       });
     });
