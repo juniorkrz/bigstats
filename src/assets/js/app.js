@@ -227,7 +227,9 @@ async function startApp() {
         } else {
             pausarLoop();
         }
-    })
+    });
+
+    $('#autoSwitch').show();
 
     // Cria os botões das duplas
     duplas.forEach((dupla, i) => {
