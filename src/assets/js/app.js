@@ -235,7 +235,7 @@ async function startApp() {
     duplas.forEach((dupla, i) => {
         $('.participantes .row').append(`
             <div class="duo mx-1" data-duo-index="${i}">
-                <img class="${dupla.participanteB.eliminado ? 'eliminado ' : ''}mr-1" src="data:image/png;base64,${dupla.participanteA.foto}" alt="Participante A">
+                <img class="${dupla.participanteA.eliminado ? 'eliminado ' : ''}mr-1" src="data:image/png;base64,${dupla.participanteA.foto}" alt="Participante A">
                 <img class="${dupla.participanteB.eliminado ? 'eliminado' : ''}" src="data:image/png;base64,${dupla.participanteB.foto}" alt="Participante B">
             </div>
         `);
