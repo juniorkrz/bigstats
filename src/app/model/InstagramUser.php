@@ -67,7 +67,7 @@ class InstagramUser
         return 'instagram_user';
     }
 
-    public function getPk()
+    public function getPrimaryKey()
     {
         return 'instagram_id';
     }
