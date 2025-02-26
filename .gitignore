@@ -1,5 +1,6 @@
 /vendor/
 .env
 .env.prod
+.env.dev
 *.log
 /database/backup
