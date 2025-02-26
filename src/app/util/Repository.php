@@ -11,6 +11,7 @@ use ReflectionProperty;
 class Repository
 {
     private $pdo;
+    public $primaryKey;
     public $className;
     public $table;
     public $sample;
@@ -21,8 +22,34 @@ class Repository
         $this->pdo = Database::getConnection();
         $this->className = $className;
         $this->sample = new $className();
-        $this->table = $this->sample->getTableName();
+        $this->primaryKey = $this->getPrimaryKey();
+        $this->table = $this->getTableName();
         $this->objects = [];
+    }
+
+    public function getPrimaryKey()
+    {
+        // Determinar a chave primária
+        if (method_exists($this->sample, 'getPrimaryKey')) {
+            return $this->sample->getPrimaryKey();
+        }
+
+        return 'id';
+    }
+
+    public function getTableName()
+    {
+        if (method_exists($this->sample, 'getTableName')) {
+            return $this->sample->getTableName();
+        }
+
+        // Obtém o nome da classe sem o namespace
+        $className = (new \ReflectionClass($this->className))->getShortName();
+
+        // Converte CamelCase para snake_case
+        $tableName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $className));
+
+        return $tableName;
     }
 
     public function isEmpty()
@@ -37,11 +64,28 @@ class Repository
 
     public function getFirst()
     {
-        return $this->objects[0];
+        if ($this->isEmpty()) {
+            return null;
+        }
+
+        return $this->objects[array_key_first($this->objects)];
+    }
+
+    public function get($key)
+    {
+        if ($this->isEmpty()) {
+            return null;
+        }
+
+        return $this->objects[$key];
     }
 
     public function getLast()
     {
+        if ($this->isEmpty()) {
+            return null;
+        }
+
         return $this->objects[array_key_last($this->objects)];
     }
 
@@ -136,12 +180,7 @@ class Repository
             }
         }
 
-        // Determinar a chave primária
-        if (method_exists($object, 'getPk')) {
-            $pk = $object->getPk();
-        } else {
-            $pk = 'id'; // Padrão para "id"
-        }
+        $pk = $this->primaryKey;
 
         // Adicionar a chave primária aos parâmetros
         /* $params[':' . $pk] = $object->$pk; */
@@ -166,13 +205,7 @@ class Repository
     // Método para deletar o objeto
     public function delete($object)
     {
-        // Determinar a chave primária
-        if (method_exists($object, 'getPk')) {
-            $pk = $object->getPk();
-        } else {
-            $pk = 'id'; // Padrão para "id"
-        }
-
+        $pk = $this->primaryKey;
         $sql = "DELETE FROM {$this->table} WHERE $pk = :$pk";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':' . $pk, $object->$pk);
@@ -192,9 +225,8 @@ class Repository
         $stmt->execute();
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->objects = array_merge($this->objects, $this->mapToObjects($results));
 
-        return $this->objects;
+        return $this->appendResultsToObjects($results);
     }
 
     public function findOne($options = null)
@@ -208,6 +240,12 @@ class Repository
         return $this->findAll($sql);
     }
 
+    public function refindOne($options = null)
+    {
+        $this->resetObjects();
+        return $this->findOne($options);
+    }
+
     // Método para buscar registros com uma consulta personalizada
     public function findByQuery(string $query, array $params = [])
     {
@@ -219,9 +257,8 @@ class Repository
 
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->objects = array_merge($this->objects, $this->mapToObjects($results));
 
-        return $this->objects;
+        return $this->appendResultsToObjects($results);
     }
 
     public function findBySample(object $sample = null)
@@ -257,24 +294,10 @@ class Repository
         $stmt->execute($params);
 
         // Obtendo o resultado como um array associativo
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Mapeando os resultados para instâncias da classe
-        $objects = [];
-        foreach ($rows as $row) {
-            $object = new $this->className();
-            foreach ($row as $column => $value) {
-                // Atribuindo os valores das colunas para as propriedades do objeto
-                if (property_exists($object, $column)) {
-                    $object->$column = $value;
-                }
-            }
-            $objects[] = $object;
-        }
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Retornando os objetos mapeados
-        $this->objects = array_merge($this->objects, $this->mapToObjects($objects));
-        return $this->objects;
+        return $this->appendResultsToObjects($results);
     }
 
     public function refindAll()
@@ -295,8 +318,20 @@ class Repository
         return $this->findBySample($sample);
     }
 
+    private function appendResultsToObjects($results)
+    {
+        $objects = $this->mapToObjects($results);
+
+        foreach ($objects as $key => $object) {
+            $this->objects[$key] = $object;
+        }
+
+        return $this->objects;
+    }
+
     private function mapToObjects(array $data)
     {
+        $primaryKey = $this->primaryKey;
         $className = $this->className;
         $objects = [];
 
@@ -344,7 +379,7 @@ class Repository
                 $object->$column = $value;
             }
 
-            $objects[] = $object;
+            $objects[$object->$primaryKey] = $object;
         }
 
         return $objects;
@@ -364,5 +399,19 @@ class Repository
         }
 
         return $columnTypes;
+    }
+
+    public function toArray($att = null): array
+    {
+        if ($att == null) {
+            $att = $this->primaryKey;
+        }
+
+        $array = [];
+        foreach ($this->objects as $object) {
+            $array[] = $object->$att;
+        }
+
+        return $array;
     }
 }
