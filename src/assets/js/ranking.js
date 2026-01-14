@@ -118,7 +118,7 @@ async function startApp() {
                     const diff = row.seguidores - row.historicoInstagramMaisAntigo.seguidores;
                     const color = diff > 0 ? 'success' : 'danger';
 
-                    return ` <small class="text-${color}">` + (diff > 0 ? '+' : '-') + (diff).toLocaleString('pt-BR') + '</small>';
+                    return ` <small class="text-${color}">` + (diff >= 0 ? '+' : '-') + (diff).toLocaleString('pt-BR') + '</small>';
                 }
             },
             { data: 'verificado', visible: false },
