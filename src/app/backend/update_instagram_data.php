@@ -92,8 +92,14 @@ try {
         $username = $instagramUser->username;
         $instagramUser = $instagramApi->getUserData($username);
 
+        $apiUser = $instagramApi->getApiUser();
+        logMessage("API User: $apiUser->username - Consultou os dados do usuário $username");
+
         if (!$instagramUser) {
             logMessage("Não foi possível obter os dados do usuário do Instagram.", true);
+            // Aguardar o tempo de sleep definido, se necessário
+            logMessage("Aguardando $sleepTime segundos...");
+            sleep($sleepTime);
             continue;
         }
 
