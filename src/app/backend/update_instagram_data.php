@@ -56,9 +56,9 @@ $instagramApi = new InstagramAPI();
 $repInstagramUser = new Repository(InstagramUser::class);
 $repInstagramUserHistory = new Repository(InstagramUserHistory::class);
 
-// Buscar participantes que não atualizam a mais de 30 minutos
+// Buscar participantes que não atualizam a mais de 60 minutos
 $now = date('Y-m-d H:i:s');
-$thirtyMinutesAgo = date('Y-m-d H:i:s', strtotime('-30 minutes', strtotime($now)));
+$thirtyMinutesAgo = date('Y-m-d H:i:s', strtotime('-60 minutes', strtotime($now)));
 $instagramUsers = $repInstagramUser->findByQuery(
     "SELECT * FROM instagram_user WHERE updated_at < :thirtyMinutesAgo ORDER BY updated_at;",
     ['thirtyMinutesAgo' => $thirtyMinutesAgo]
