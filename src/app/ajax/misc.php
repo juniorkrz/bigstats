@@ -6,30 +6,30 @@ require_once "bbb.php";
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-$result = (object) array(
-    "status" => false,
-    "message" => "Nenhuma ação realizada."
-);
-
+$result = (object) [
+    "status"  => false,
+    "message" => "Nenhuma ação realizada.",
+    "data"    => []
+];
 
 $action = getVar('action');
 
-if ($action == 'obterDuplas') {
-    $duplas = obterDuplas();
-    $success = !empty($duplas);
+switch ($action) {
 
-    $result->status  = $success;
-    $result->message = $success ? "Duplas obtidas com sucesso." : "Nenhuma dupla encontrada.";
-    $result->data    = $duplas;
-}
+    case 'obterParticipantes':
+        $participantes = obterParticipantes();
+        $success = !empty($participantes);
 
-else if ($action == 'obterParticipantes') {
-    $participantes = obterParticipantes();
-    $success = !empty($participantes);
+        $result->status  = $success;
+        $result->message = $success
+            ? "Participantes obtidos com sucesso."
+            : "Nenhum participante encontrado.";
+        $result->data = $participantes;
+        break;
 
-    $result->status  = $success;
-    $result->message = $success ? "Participantes obtidos com sucesso." : "Nenhuma participante encontrado.";
-    $result->data    = $participantes;
+    default:
+        $result->message = "Ação inválida.";
+        break;
 }
 
 echo json_encode($result);

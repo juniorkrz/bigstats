@@ -18,13 +18,16 @@
 require_once "app/config.php";
 $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
 $appVersion = $_ENV['APP_VERSION'] ?? '1.0.0';
-$pageTitle = 'Duplas';
+$pageTitle = 'Ranking';
+$currentYear = date('Y');
 
 try {
   $lastCommitHash = getLastCommitHash();
 } catch (Exception $e) {
   $lastCommitHash = bin2hex(random_bytes(16));
 }
+
+/* $lastCommitHash = bin2hex(random_bytes(16)); */
 
 ?>
 <!DOCTYPE html>
@@ -42,10 +45,11 @@ try {
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicon/favicon-16x16.png">
   <link rel="manifest" href="./assets/manifest/site.webmanifest">
   <title>
-    <?php echo "$appName 2025 - $pageTitle"?>
+    <?php echo "$appName $currentYear - $pageTitle" ?>
   </title>
   <!-- CSS -->
   <?php require_once('./components/css.php'); ?>
+  <link href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.min.css.css" rel="stylesheet">
   <!-- Tags -->
   <?php require_once('./components/tags.php'); ?>
 </head>
@@ -61,97 +65,20 @@ try {
         <div class="spinner"></div>
       </div>
       <div id="stats" class="content d-none animate__animated animate__fadeIn">
-        <div class="participantes d-flex justify-content-center align-items-center mb-3">
-          <div class="row w-100 d-flex justify-content-center align-items-center">
-            <!-- <div class="duo">
-              <img class="mx-1" src="./assets/img/default-avatar.png" alt="">
-              <img class="mx-1" src="./assets/img/default-avatar.png" alt="">
-            </div> -->
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-4">
-            <div class="card card-chart">
-              <div class="card-header">
-                <h5 class="card-category participanteA" data="nome"></h5>
-                <h3 class="card-title"><i class="fab fa-instagram text-danger"></i> <span class="participanteA" data="seguidores"></span></h3>
-              </div>
-              <div class="card-body">
-                <div class="chart-area">
-                  <canvas id="chartParticipanteA"></canvas>
-                </div>
-              </div>
+        <div class="col-md-12">
+          <div class="card ">
+            <div class="card-header">
+              <h4 class="card-title"> Participantes</h4>
             </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="card card-user">
-              <div class="card-body">
-                <p class="card-text"></p>
-                <div class="duo-profiles d-flex justify-content-between align-items-center">
-                  <!-- Primeiro perfil -->
-                  <div class="author text-center">
-                    <div data="blue" class="block block-one"></div>
-                    <div data="blue" class="block block-two"></div>
-                    <div data="blue" class="block block-three"></div>
-                    <div data="blue" class="block block-four"></div>
-                    <div class="profile-image-wrapper">
-                      <a href="javascript:void(0)" class="profile-wrapper">
-                        <img class="avatar participanteA d-none" data="foto" alt="...">
-                      </a>
-                      <img src="./assets/img/verificado.webp" class="verified-badge d-none participanteA" data="verificado" alt="Verificado">
-                    </div>
-                    <h5 class="title participanteA" data="nome"></h5>
-                    <button href="javascript:void(0)" class="btn btn-icon btn-round btn-instagram participanteA" data="instagram">
-                      <i class="fab fa-instagram text-danger"></i>
-                    </button>
-                  </div>
-                  <!-- Segundo perfil -->
-                  <div class="author text-center">
-                    <div class="profile-image-wrapper">
-                      <a href="javascript:void(0)" class="profile-wrapper">
-                        <img class="avatar participanteB d-none" data="foto" alt="...">
-                      </a>
-                      <img src="./assets/img/verificado.webp" class="verified-badge d-none participanteB" data="verificado" alt="Verificado">
-                    </div>
-                    <h5 class="title participanteB" data="nome"></h5>
-                    <button href="javascript:void(0)" class="btn btn-icon btn-round btn-instagram participanteB" data="instagram">
-                      <i class="fab fa-instagram text-danger"></i>
-                    </button>
-                  </div>
+            <div class="card-body">
+              <div class="table-responsive ps">
+                <table class="table tablesorter " id="participantsTable">
+                </table>
+                <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                  <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>
                 </div>
-              </div>
-              <div class="card-footer text-center description dupla" data="grauRelacaoFormatada">
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="card card-chart">
-              <div class="card-header">
-                <h5 class="card-category participanteB" data="nome"></h5>
-                <h3 class="card-title"><i class="fab fa-instagram text-danger"></i> <span class="participanteB" data="seguidores"></span></h3>
-              </div>
-              <div class="card-body">
-                <div class="chart-area">
-                  <canvas id="chartParticipanteB"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <div class="card card-chart">
-              <div class="card-header ">
-                <div class="row">
-                  <div class="col-sm-6 text-left">
-                    <h5 class="card-category">Dupla</h5>
-                    <h3 class="card-title"><i class="fab fa-instagram text-danger"></i> <span class="dupla" data="seguidores"></span></h3>
-                  </div>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="chart-area">
-                  <canvas id="chartDupla"></canvas>
+                <div class="ps__rail-y" style="top: 0px; right: 0px;">
+                  <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div>
                 </div>
               </div>
             </div>
@@ -170,12 +97,13 @@ try {
   <!-- Chart JS -->
   <script src="./assets/js/plugins/chartjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.datatables.net/2.2.1/js/dataTables.min.js"></script>
   <!--  Notifications Plugin    -->
   <!-- <script src="./assets/js/plugins/bootstrap-notify.js"></script> -->
   <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="./assets/js/black-dashboard.js?v=<?php echo $lastCommitHash ?>"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
   <!-- <script src="./assets/demo/demo.js"></script> -->
-  <script src="./assets/js/app.js?v=<?php echo $lastCommitHash ?>"></script>
+  <script src="./assets/js/ranking.js?v=<?php echo $lastCommitHash ?>"></script>
   <script>
     $(document).ready(function() {
       $().ready(function() {
@@ -230,13 +158,9 @@ try {
 
         // Active Navigation
         $('.sidebar li a').each(function() {
-          let currentPage = window.location.pathname.split("/").pop();
-
-          if (currentPage == "") {
-            currentPage = "index.php";
-          }
-
+          const currentPage = window.location.pathname.split("/").pop();
           const thisPage = this.href.split("/").pop();
+          console.log(currentPage, thisPage);
           if (currentPage == thisPage) {
             $(this).closest('li').addClass('active');
           }
