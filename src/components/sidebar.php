@@ -12,14 +12,14 @@
             </a>
         </div>
         <ul class="nav">
-            <!-- <li>
+            <li>
                 <a href="./index.php">
                     <i class="tim-icons icon-chart-pie-36"></i>
                     <p>Participantes</p>
                 </a>
-            </li> -->
+            </li>
             <li>
-                <a href="./index.php">
+                <a href="./ranking.php">
                     <i class="tim-icons icon-chart-pie-36"></i>
                     <p>Ranking</p>
                 </a>

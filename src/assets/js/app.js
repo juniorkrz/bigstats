@@ -1,73 +1,99 @@
-const showDuoTime = 15;// Tempo em segundos que exibe cada dupla
-const dataUpdateInterval = 30;// Tempo mínimo em segundos entre atualizações dos dadoss
+const showParticipantTime = 15; // Tempo em segundos que exibe cada participante
+const dataUpdateInterval = 30;  // Tempo mínimo em segundos entre atualizações
 
-let duplas = [];
+let participantes = [];
 let charts = {};
 let intervalId;
-let duplaIndex = 0;
-var lastUpdate = 0;
+let participanteIndex = 0;
+let lastUpdate = 0;
 
-// Inicia o loop que exibe as duplas
+/* =======================
+   LOOP
+======================= */
 const iniciarLoop = () => {
     intervalId = setInterval(() => {
-        duplaIndex++;
+        participanteIndex++;
 
-        if (duplaIndex >= duplas.length) {
-            duplaIndex = 0
+        if (participanteIndex >= participantes.length) {
+            participanteIndex = 0;
         }
 
-        exibirDupla(duplas[duplaIndex]);
-    }, showDuoTime * 1000);
-}
+        exibirParticipante(participantes[participanteIndex]);
+    }, showParticipantTime * 1000);
+};
 
-// Pausa o loop
 const pausarLoop = () => {
     clearInterval(intervalId);
-}
+};
 
-// Obtém as duplas do servidor
-const obterDuplas = async () => {
+/* =======================
+   DADOS
+======================= */
+const obterParticipantes = async () => {
     try {
         const response = await $.ajax({
             url: 'app/ajax/misc.php',
             method: 'POST',
             dataType: 'json',
-            data: { action: 'obterDuplas' },
+            data: { action: 'obterParticipantes' },
         });
 
         if (response.status) {
-            duplas = response.data;
+            participantes = response.data;
             lastUpdate = Date.now();
             console.log(`[ Big Stats ]: Dados atualizados em ${new Date(lastUpdate).toLocaleString()}`);
         } else {
-            console.error('Erro ao obter as duplas:', response.message || 'Resposta inesperada.');
+            console.error('Erro ao obter participantes:', response.message);
         }
     } catch (error) {
         console.error('Erro na requisição AJAX:', error);
     }
 };
 
-const exibirDupla = (dupla) => {
-    console.log(`[ Big Stats ]: Exibindo dupla ${duplaIndex + 1} de ${duplas.length}`,);
+/* =======================
+   EXIBIÇÃO
+======================= */
+const exibirParticipante = (participante) => {
+    console.log(`[ Big Stats ]: Exibindo participante ${participanteIndex + 1} de ${participantes.length}`);
 
-    // Remove a classe .active de todas as duplas
-    $('.duo').removeClass('active');
+    $('.participante').each(function () {
+        const key = $(this).attr('data');
 
-    // Adiciona a classe .active à dupla atual
-    const duoElement = $(`.duo[data-duo-index="${duplaIndex}"]`);
-    duoElement.addClass('active');
+        switch (key) {
+            case 'instagram':
+                $(this).attr('href', 'https://www.instagram.com/' + participante.instagram);
+                break;
 
-    exibirParticipante(dupla.participanteA, "participanteA");
-    exibirParticipante(dupla.participanteB, "participanteB");
-    exibirParticipante(dupla, "dupla");
+            case 'verificado':
+                participante.verificado ? $(this).removeClass('d-none') : $(this).addClass('d-none');
+                break;
 
-    // Atualiza gráficos
-    updateChart("chartParticipanteA", dupla.participanteA.historicoInstagram);
-    updateChart("chartParticipanteB", dupla.participanteB.historicoInstagram);
-    updateChart("chartDupla", dupla.historicoInstagram);
+            case 'foto':
+                const $img = $(this);
+                $img.attr('src', 'data:image/png;base64,' + participante.foto);
+
+                participante.eliminado
+                    ? $img.addClass('eliminado')
+                    : $img.removeClass('eliminado');
+                break;
+
+            case 'seguidores':
+                $(this).html(participante.seguidores.toLocaleString('pt-BR'));
+                break;
+
+            default:
+                $(this).html(participante[key]);
+        }
+    });
+
+    updateChart('chartParticipante', participante.historicoInstagram);
 };
 
+/* =======================
+   GRÁFICOS
+======================= */
 const createChart = (chartId) => {
+    console.log(chartId)
     const ctx = document.getElementById(chartId).getContext("2d");
     const gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
 
@@ -78,231 +104,98 @@ const createChart = (chartId) => {
     return new Chart(ctx, {
         type: 'line',
         data: {
-            labels: [], // Inicialmente vazio
+            labels: [],
             datasets: [{
                 label: "Seguidores",
                 fill: true,
                 backgroundColor: gradientStroke,
                 borderColor: '#237ff7',
                 borderWidth: 2,
-                pointBackgroundColor: '#237ff7',
-                pointBorderColor: 'rgba(255,255,255,0)',
-                pointHoverBackgroundColor: '#237ff7',
-                pointBorderWidth: 20,
-                pointHoverRadius: 4,
-                pointHoverBorderWidth: 15,
                 pointRadius: 4,
-                data: [] // Inicialmente vazio
+                data: []
             }]
         },
         options: {
             maintainAspectRatio: false,
-            legend: { display: false },
-            tooltips: {
-                backgroundColor: '#f5f5f5',
-                titleFontColor: '#333',
-                bodyFontColor: '#666',
-                bodySpacing: 4,
-                xPadding: 12,
-                mode: "nearest",
-                intersect: 0,
-                position: "nearest",
-                callbacks: {
-                    label: function (tooltipItem, data) {
-                        const value = tooltipItem.yLabel;
-                        return value.toLocaleString('pt-BR'); // Formatação do número no tooltip
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: {
+                    ticks: {
+                        callback: value => value.toLocaleString('pt-BR')
                     }
                 }
-            },
-            responsive: true,
-            scales: {
-                yAxes: [{
-                    barPercentage: 1.6,
-                    gridLines: {
-                        drawBorder: false,
-                        color: 'rgba(29,140,248,0.0)',
-                        zeroLineColor: "transparent",
-                    },
-                    ticks: {
-                        padding: 20,
-                        fontColor: "#9a9a9a",
-                        callback: function (value) {
-                            return value.toLocaleString('pt-BR'); // Formatação do número no eixo Y
-                        }
-                    }
-                }],
-                xAxes: [{
-                    barPercentage: 1.6,
-                    gridLines: {
-                        drawBorder: false,
-                        color: 'rgba(225,78,202,0.1)',
-                        zeroLineColor: "transparent",
-                    },
-                    ticks: {
-                        padding: 20,
-                        fontColor: "#9a9a9a"
-                    }
-                }]
             }
         }
     });
 };
 
-const updateChart = (chartId, historicoInstagram) => {
-    const labels = historicoInstagram.map(entry => entry.day); // Presumindo que os dias já estão formatados no backend
-    const dataPoints = historicoInstagram.map(entry => entry.followers); // Manter os valores numéricos para o gráfico
-
+const updateChart = (chartId, historico) => {
     if (!charts[chartId]) charts[chartId] = createChart(chartId);
 
-    const chart = charts[chartId];
-    chart.data.labels = labels;
-    chart.data.datasets[0].data = dataPoints;
-    chart.update(); // Atualizar o gráfico
+    charts[chartId].data.labels = historico.map(h => h.day);
+    charts[chartId].data.datasets[0].data = historico.map(h => h.followers);
+    charts[chartId].update();
 };
 
-// Exibe informações de um participante
-const KeyAction = {
-    INSTAGRAM: 'instagram',
-    VERIFICADO: 'verificado',
-    FOTO: 'foto',
-    SEGUIDORES: 'seguidores',
-};
-
-const exibirParticipante = (participante, index) => {
-    $(`.${index}`).each(function () {
-        const key = $(this).attr('data');
-
-        switch (key) {
-            case KeyAction.INSTAGRAM:
-                $(this).attr('href', 'https://www.instagram.com/' + participante[key]);
-                break;
-
-            case KeyAction.VERIFICADO:
-                if (participante[key]) {
-                    $(this).removeClass('d-none');
-                } else {
-                    $(this).addClass('d-none');
-                }
-                break;
-
-            case KeyAction.FOTO:
-                const $img = $(this);
-
-                if ($('#autoSwitch').is(':checked')) {
-                    $img.fadeOut(300, function () {
-                        $img.attr('src', "data:image/png;base64," + participante[key]);
-                        $img.fadeIn(300);
-                    });
-                } else {
-                    $img.attr('src', "data:image/png;base64," + participante[key]);
-                }
-
-                if (participante.eliminado) {
-                    $(this).addClass('eliminado');
-                } else {
-                    $(this).removeClass('eliminado');
-                }
-                break;
-
-            case KeyAction.SEGUIDORES:
-                $(this).html(participante[key].toLocaleString('pt-BR'));
-                break;
-
-            default:
-                $(this).html(participante[key]);
-                break;
-        }
-    });
-};
-
-
+/* =======================
+   START APP
+======================= */
 async function startApp() {
-    // Carregar as duplas pela primeira vez
-    await obterDuplas();
+    await obterParticipantes();
 
-    // Switch para pausar a exibição de duplas automática
     $('#autoSwitch').on('change', function () {
-        if (this.checked) {
-            iniciarLoop();
-        } else {
-            pausarLoop();
-        }
-    });
+        this.checked ? iniciarLoop() : pausarLoop();
+    }).show();
 
-    $('#autoSwitch').show();
-
-    // Cria os botões das duplas
-    duplas.forEach((dupla, i) => {
-        $('.participantes .row').append(`
-            <div class="duo mx-1" data-duo-index="${i}">
-                <img class="${dupla.participanteA.eliminado ? 'eliminado ' : ''}mr-1" src="data:image/png;base64,${dupla.participanteA.foto}" alt="Participante A">
-                <img class="${dupla.participanteB.eliminado ? 'eliminado' : ''}" src="data:image/png;base64,${dupla.participanteB.foto}" alt="Participante B">
-            </div>
+    // Lista de participantes (avatars)
+    participantes.forEach((p, i) => {
+        $('.participantes').append(`
+            <img class="avatar participante mx-1 ${p.eliminado ? 'eliminado' : ''}"
+                 data-index="${i}"
+                 src="data:image/png;base64,${p.foto}">
         `);
     });
 
-    // Evento de clique em .duo para pausar o loop e exibir a dupla
-    $('.duo').click(function (e) {
-        if ($('#autoSwitch').is(':checked')) {
-            e.preventDefault();
-            pausarLoop();
-            duplaIndex = $(this).data('duo-index');
-            exibirDupla(duplas[duplaIndex]);
-            iniciarLoop();
-        } else {
-            duplaIndex = $(this).data('duo-index');
-            exibirDupla(duplas[duplaIndex]);
-        }
+    // Clique manual
+    $('.participantes').on('click', '.avatar', function () {
+        participanteIndex = $(this).data('index');
+        exibirParticipante(participantes[participanteIndex]);
     });
 
-    // Evento de clique para abrir o link do Instagram
+    // Botão Instagram
     $('.btn-instagram').click(function (e) {
         e.preventDefault();
         window.open($(this).attr('href'), '_blank');
     });
 
-    // Modal com informações de um participante
-    $('.avatar').click(function () {
-        const dupla = duplas[duplaIndex];
-        const participante = $(this).hasClass('participanteA') ? dupla.participanteA : dupla.participanteB;
-        const badge = participante.verificado ? ' <img src="./assets/img/verificado.webp" class="verified-badge-modal" alt="Verificado">' : '';
+    // Modal
+    $('.participantes').on('click', '.avatar', function () {
+        const p = participantes[$(this).data('index')];
 
         Swal.fire({
-            title: `${participante.nome}${badge}`,
-            text: participante.detalhes,
-            imageUrl: `data:image/png;base64,${participante.foto}`,
+            title: p.nome,
+            text: p.detalhes,
+            imageUrl: `data:image/png;base64,${p.foto}`,
             imageWidth: 150,
             imageHeight: 150,
-            imageAlt: participante.nome,
-            footer: `${participante.grupo} | Seguidores: ${participante.seguidores.toLocaleString('pt-BR')} | @${participante.instagram}`,
-            confirmButtonText: 'Fechar',
-            customClass: {
-                image: 'rounded-image'  // Adiciona uma classe personalizada à imagem
-            }
+            footer: `Seguidores: ${p.seguidores.toLocaleString('pt-BR')} | @${p.instagram}`,
+            confirmButtonText: 'Fechar'
         });
     });
 
-    // Inicializa a exibição inicial e inicia o loop
-    exibirDupla(duplas[duplaIndex]);
+    exibirParticipante(participantes[participanteIndex]);
 
-    // Inicia o loop se a opção de autoSwitch estiver marcada
-    if ($('#autoSwitch').is(':checked')) {
-        iniciarLoop();
-    }
+    if ($('#autoSwitch').is(':checked')) iniciarLoop();
 
-    // Esconde o spinner e exibe as duplas quando o carregamento terminar
     $('.avatar').removeClass('d-none');
-    $('.spinner').addClass('animate__animated animate__fadeOut');
-    $('#loader').removeClass('d-flex').addClass('d-none');
+    $('#loader').addClass('d-none');
     $('#stats').removeClass('d-none');
 
-    // Loop para atualizar os dados
-    setInterval(() => {
-        obterDuplas();
-
+    setInterval(async () => {
+        await obterParticipantes();
         if (!$('#autoSwitch').is(':checked')) {
-            exibirDupla(duplas[duplaIndex]);
+            exibirParticipante(participantes[participanteIndex]);
         }
-
     }, dataUpdateInterval * 1000);
 }

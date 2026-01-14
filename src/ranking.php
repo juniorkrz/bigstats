@@ -19,12 +19,9 @@ require_once "app/config.php";
 $appName = $_ENV['APP_NAME'] ?? 'Big Stats';
 $appVersion = $_ENV['APP_VERSION'] ?? '1.0.0';
 $pageTitle = 'Ranking';
+$currentYear = date('Y');
 
-try {
-  $lastCommitHash = getLastCommitHash();
-} catch (Exception $e) {
-  $lastCommitHash = bin2hex(random_bytes(16));
-}
+$lastCommitHash = bin2hex(random_bytes(16));
 
 /* $lastCommitHash = bin2hex(random_bytes(16)); */
 
@@ -44,7 +41,7 @@ try {
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicon/favicon-16x16.png">
   <link rel="manifest" href="./assets/manifest/site.webmanifest">
   <title>
-    <?php echo "$appName 2025 - $pageTitle" ?>
+    <?php echo "$appName $currentYear - $pageTitle" ?>
   </title>
   <!-- CSS -->
   <?php require_once('./components/css.php'); ?>
