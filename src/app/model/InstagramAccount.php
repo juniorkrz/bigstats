@@ -11,19 +11,25 @@ class InstagramAccount
     public $uses;
     public $created_at;
     public $updated_at;
+    public $username;
+    public $rate_limited;
 
     public function __construct(
         $id = null,
         $ds_user_id = null,
         $uses = null,
         $created_at = null,
-        $updated_at = null
+        $updated_at = null,
+        $username = null,
+        $rate_limited = null
     ) {
         $this->id = $id;
         $this->ds_user_id = $ds_user_id;
         $this->uses = $uses;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
+        $this->username = $username;
+        $this->rate_limited = $rate_limited;
     }
 
     public function getTableName()
@@ -43,5 +49,10 @@ class InstagramAccount
         }
 
         return $cookie_str;
+    }
+
+    public function isRateLimited()
+    {
+        return $this->rate_limited;
     }
 }

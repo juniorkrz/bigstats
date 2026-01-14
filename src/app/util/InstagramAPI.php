@@ -9,23 +9,34 @@ use RuntimeException;
 class InstagramAPI
 {
     private $cookie;
-    private $account;
+    private ?InstagramAccount $account;
     private ?string $username;
     private string $baseUrl = "https://i.instagram.com/api/v1/users/web_profile_info/";
     private int $timeout = 10;
 
-    public function __construct() {}
+    public function __construct() {
+        $this->account = null;
+    }
 
     public function setUsername(string $username): void
     {
         $this->username = $username;
     }
 
+    public function getApiUser()
+    {
+        return $this->account;
+    }
+
     public function setCookie(): string
     {
         $rep_instagram_account = new Repository(InstagramAccount::class);
-        $rep_instagram_account->findOne('ORDER BY uses');
+        $rep_instagram_account->findOne('WHERE rate_limited = 0 ORDER BY updated_at ASC, uses ASC');
         $this->account = $rep_instagram_account->getFirst();
+
+        if ($this->account === null) {
+            throw new RuntimeException("Nenhuma conta disponível.");
+        }
 
         $this->cookie = $this->account->getCookies();
         return $this->cookie;
@@ -83,7 +94,14 @@ class InstagramAPI
         }
 
         if ($httpCode !== 200) {
-            throw new RuntimeException("Erro HTTP: Código $httpCode");
+            $ds_user_id = $this->account->ds_user_id;
+            $username = $this->account->username;
+
+            /* marca a conta como rate_limited */
+            $this->account->rate_limited = true;
+            $repAccount->update($this->account);
+
+            throw new RuntimeException("Erro HTTP: Código $httpCode | username: $username | ds_user_id: $ds_user_id | response: $response");
         }
 
         return $response;
