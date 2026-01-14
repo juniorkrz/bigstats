@@ -4,6 +4,7 @@ namespace App\backend;
 
 use App\model\InstagramUser;
 use App\model\InstagramUserHistory;
+use App\model\Participante;
 use App\util\InstagramAPI;
 use App\util\Repository;
 use App\util\Telegram;
@@ -63,6 +64,28 @@ $instagramUsers = $repInstagramUser->findByQuery(
     ['thirtyMinutesAgo' => $thirtyMinutesAgo]
 );
 
+// Busca participantes que nunca foram atualizados
+$repParticipante = new Repository(Participante::class);
+$repParticipante->findByQuery(
+    "SELECT p.*
+     FROM bbb_participante p
+     LEFT JOIN instagram_user iu
+            ON iu.username = p.instagram
+     WHERE iu.username IS NULL
+       AND p.instagram IS NOT NULL
+       AND p.instagram <> ''"
+    );
+
+if (!$repParticipante->isEmpty()) {
+    $instagramUsers = [];
+
+    foreach ($repParticipante->objects as $participante) {
+        $instagramUser = new InstagramUser();
+        $instagramUser->username = $participante->instagram;
+        $instagramUsers[] = $instagramUser;
+    }
+
+}
 
 try {
     foreach ($instagramUsers as $instagramUser /* @var $instagramUser InstagramUser */) {
