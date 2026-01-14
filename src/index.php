@@ -21,11 +21,7 @@ $appVersion = $_ENV['APP_VERSION'] ?? '1.0.0';
 $pageTitle = 'Ranking';
 $currentYear = date('Y');
 
-try {
-  $lastCommitHash = getLastCommitHash();
-} catch (Exception $e) {
-  $lastCommitHash = bin2hex(random_bytes(16));
-}
+$lastCommitHash = bin2hex(random_bytes(16));
 
 /* $lastCommitHash = bin2hex(random_bytes(16)); */
 
