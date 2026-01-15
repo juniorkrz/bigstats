@@ -152,8 +152,12 @@ $lastCommitHash = bin2hex(random_bytes(16));
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label>Biografia</label>
-                                    <p class="participante" data="detalhes">Sem biografia disponível.</p>
+                                    <label>Detalhes</label>
+                                    <p class="participante" data="detalhes">Sem detalhes disponível.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Biografia Instagram</label>
+                                    <p class="participante" data="biografia">Sem biografia disponível.</p>
                                 </div>
                             </div>
                         </div>
