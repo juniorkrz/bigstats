@@ -64,6 +64,10 @@ const exibirParticipante = (participante) => {
                 $(this).attr('href', 'https://www.instagram.com/' + participante.instagram);
                 break;
 
+            case 'instagram_username':
+                $(this).html('@' + participante.instagram);
+                break;
+
             case 'verificado':
                 participante.verificado ? $(this).removeClass('d-none') : $(this).addClass('d-none');
                 break;
@@ -71,6 +75,7 @@ const exibirParticipante = (participante) => {
             case 'foto':
                 const $img = $(this);
                 $img.attr('src', 'data:image/png;base64,' + participante.foto);
+                $img.data('index', participanteIndex);
 
                 participante.eliminado
                     ? $img.addClass('eliminado')
@@ -110,6 +115,9 @@ const exibirParticipante = (participante) => {
                 $(this).html(participante.crescimentoMensalPercentual);
                 break;
 
+            case 'cidade_estado':
+                $(this).html(participante.cidade + ' - ' + participante.estado);
+                break;
 
             default:
                 $(this).html(participante[key]);

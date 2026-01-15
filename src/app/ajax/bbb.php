@@ -106,7 +106,7 @@ function obterDadosInstagram($username)
     return $repInstagramUser->getFirst();
 }
 
-function processarDadosParticipante($participante, $obterHistorico = true, $obterHistoricoMaisAntigo = false, $obterUltimas24Hrs = false)
+function processarDadosParticipante($participante, $obterHistorico = true, $obterHistoricoMaisAntigo = false, $obterUltimas24Hrs = false, $obterCrescimento = true)
 {
     $dadosInstagram = obterDadosInstagram($participante->instagram);
 
@@ -125,6 +125,11 @@ function processarDadosParticipante($participante, $obterHistorico = true, $obte
         "seguidores" => $dadosInstagram->followers_count,
         "verificado" => $dadosInstagram->is_verified,
         "foto" => $dadosInstagram->profile_pic_base64,
+        "nome_completo" => $participante->nome_completo,
+        "profissao" => $participante->profissao,
+        "cidade" => $participante->cidade,
+        "estado" => $participante->estado,
+        "idade" => $participante->idade,
     );
 
     if ($obterHistorico) {
