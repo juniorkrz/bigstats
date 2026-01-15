@@ -190,8 +190,8 @@ async function startApp() {
     // Lista de participantes (avatars)
     participantes.forEach((p, i) => {
         $('.participantes .row').append(`
-            <div class="participante avatar-cabecograma mx-1" data-index="${i}">
-              <img class="avatar participante mx-1 ${p.eliminado ? 'eliminado' : ''}"
+            <div class="participante avatar-cabecograma" data-index="${i}">
+              <img class="avatar participante ${p.eliminado ? 'eliminado' : ''}"
               src="data:image/png;base64,${p.foto}"
               data-index="${i}"
               alt="${p.nome}">
