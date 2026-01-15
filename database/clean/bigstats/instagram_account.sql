@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `instagram_account` (
   `username` varchar(50) DEFAULT NULL,
   `rate_limited` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 -- Exportação de dados foi desmarcado.
 

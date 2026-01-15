@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS `instagram_user_history` (
   PRIMARY KEY (`id`),
   KEY `instagram_id` (`instagram_id`),
   KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
--- Copiando dados para a tabela bigstats.instagram_user_history: ~75 rows (aproximadamente)
+-- Copiando dados para a tabela bigstats.instagram_user_history: ~100 rows (aproximadamente)
 INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
 	(1, '2308757549', 'brenocora', 'Breno Corã', 'Participante do #BBB26\nBiologo | Modelo | Mestre em Biotecnologia\nAqui e Agora! Vamos sonhar juntos!!!\n#TeamBreno♟️', 14261, '2026-01-13 00:15:19');
 INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
@@ -188,6 +188,48 @@ INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_na
 	(82, '3980959', 'anapaularenault', 'Ana Paula Renault 🥂', 'Olha elaaaa! 🥂\nAtivista e apresentadora.\n✉️ contato@anapaularenault.com.br\n#TeamRenault | #BBB26', 2588545, '2026-01-14 22:53:13');
 INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
 	(83, '1548258336', 'babusantana', 'BABU SANTANA', 'ATOR| CANTOR| DIRETOR \n@gruponosdomorrooficial \n.\n📧: contato@babusantana.com\nartístico: sabrina.isnard@tingodelata.com.br\npubli: babu@mynd8.com.br', 4774757, '2026-01-14 22:56:15');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(84, '666973139', 'solvegaoficial', 'SOL VEGA ☀️', 'Do BBB4 ao #BBB26! #TeamSol\nAtriz, empresária e cantora do hit “Iarnuou”.\nArtístico: solvega@3work.com.br\nPubli: solvega_comercial@g.globo', 376703, '2026-01-15 12:42:06');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(85, '397205072', 'edilsonjogador', 'Edilson Capetinha 🏆', 'Edilson Capetinha 🏆\n#Camarote #BBB26 \nPentacampeão do Mundo ⚽️\n#EdilsonCapetinha #EdilsonNoBBB', 1212774, '2026-01-15 12:45:07');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(86, '30501027', 'sarahandrade', 'Sarah Andrade', '#BBB26 | #TeamSarah 🔎\nComunicadora e empreendedora', 7611865, '2026-01-15 12:48:09');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(87, '298028046', 'albertocowboy', 'Alberto Cowboy', '🤠 BBB26 | #TeamCowboy \n19 anos depois, o Cowboy ainda é Cowboy\n📧 albertocowboy_comercial@g.globo', 103551, '2026-01-15 12:51:10');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(88, '2308757549', 'brenocora', 'Breno Corã', 'Participante do #BBB26\nBiologo | Modelo | Mestre em Biotecnologia\nAqui e Agora! Vamos sonhar juntos!!!\n#BrenoBBB26♟️', 50392, '2026-01-15 12:54:11');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(89, '19153869', 'brigidoneto', 'Brigido Neto | Mentor de Escolas', '#BrigiTeam BBB 26🔨\nEmpreendedorismo | Educação | Lifestyle\nDiretor e CEO do @eusoucbn\n📧 brigido_comercial@g.globo', 32026, '2026-01-15 12:57:12');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(90, '1119316814', 'jordanaribmorais', 'Jordana Morais', 'BBB 26\n#TeamJordana 💖\nBrasília \nAdvogada e Modelo ⚖️✨\nContato comercial: \njordanamorais_comercial@g.globo', 148343, '2026-01-15 13:00:13');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(91, '290679950', 'marciele.albuquerque', 'Marciele Albuquerque', 'BBB 26 | #TimeMarciele 🪇\nDança • Cultura • Arte \nCunhã Poranga do @boicaprichoso  #Munduruku \n📧 marciele_comercial@g.globo', 861468, '2026-01-15 13:03:14');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(92, '208886025', 'maxiane', 'Maxiane Rodrigues', 'Participante Pipoca BBB26 🪞\n#MaxianenoBBB26\n✉️ maxiane_comercial@g.globo.com\nUma potência sem filtro!', 109421, '2026-01-15 13:06:17');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(93, '144825681', 'oxemarcelo', 'Marcelinho', 'Participante do #BBB26\nMédico | Modelo\n📧 marcelo_comercial@g.globo\n#TeamMarcelinho 🐦‍🔥\nNunca foi sorte, sempre foi Deus!', 87893, '2026-01-15 13:09:18');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(94, '7506226814', 'pauloaaugustocm', 'Paulo Augusto Carvalhaes', '🏡 PARTICIPANTE DO #BBB26 | #TeamPA\n🐎 Estudante de Veterinária\n🌾 Anápolis 🚜 Itaguaru – GO\n💪 Influenciador\n📩 pauloaugusto_comercial@g.globo', 382743, '2026-01-15 13:12:20');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(95, '6259159064', 'pedroespindolap', 'Pedro Henrique Espindola 🌹', 'PERFIL OFICIAL \nParticipante do #BBB26 \n🌹 | Vendedor ambulante\n💪🏼 | Tropa do pedro #TeamPedro\n📧 | contatoglobo@globo.com', 74299, '2026-01-15 13:15:21');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(96, '1586005548', 'samira_sagr', 'Sami Sagr 💋', 'PARTICIPANTE DO #BBB26 #TeamSamira 💋\n💋 Atendente de bar\n🐶 Mamãe do @lindolfo_sagr\n💌 samira_comercial@g.globo', 233238, '2026-01-15 13:18:23');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(97, '198554911', 'solangecouto', '𝐒𝐨𝐥𝐚𝐧𝐠𝐞 𝐂𝐨𝐮𝐭𝐨', 'Atriz • Participante BBB26\n📍 Agente @luizgwyer \n📩 luiz@luizgwyer.com.br\n🔎 Minhas Redes', 1151851, '2026-01-15 13:21:24');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(98, '35861145', 'jonassulzbach', 'JONΛS SULZBΛCH A+', 'BBB26 | #TeamJonas 🤙🏻\n📧 jonas_comercial@g.globo', 3373340, '2026-01-15 13:24:25');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(99, '52194825685', 'tiamilenabbb', 'Milena Moreira, a Tia Milena', '🎨 Perfil oficial da Milena Moreira, a Tia Milena\n⭐ Participante do BBB26\n🏡 Teófilo Otoni, nascida em Itambacuri (MG)\nmilena_comercial@g.globo', 96146, '2026-01-15 13:27:26');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(100, '1144859455', 'julianofloss', 'JULIANO FLOSS LUCATEL', '#BBB26 | #TeamFloss 🐉\nAURORA SOON⏳\nBABYLON & TENTEI 2k26\nOwner @flosscamp', 4434360, '2026-01-15 13:30:28');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(101, '1656675', 'henricastelli', 'Henri Castelli', 'Henri Castelli\nBBB26 | #TeamHenri 🎬\nVivendo um personagem que só eu conheço, ou não, eu mesmo!\n📧 comercial@castellihenri.com.br', 3184637, '2026-01-15 13:33:29');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(102, '212283980', 'soualinecampos', 'Aline Campos 🔮', '#TeamAlineCampos #BBB26🔮 \nArte | Saúde física, mental | Beleza Contato@soualinecampos.com\n✨☯️Link da lista de transmissão⬇️✨', 11306180, '2026-01-15 13:36:31');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(103, '3980959', 'anapaularenault', 'Ana Paula Renault 🥂', 'Olha elaaaa! 🥂\nAtivista e apresentadora.\n✉️ contato@anapaularenault.com.br\n#TeamRenault | #BBB26', 2625003, '2026-01-15 13:39:33');
+INSERT INTO `instagram_user_history` (`id`, `instagram_id`, `username`, `full_name`, `biography`, `followers_count`, `created_at`) VALUES
+	(104, '1548258336', 'babusantana', 'BABU SANTANA', 'ATOR & Veterano do BBB 26 | #TropaDoBabu 🪮\n📧: contato@babusantana.com\nartístico: sabrina.isnard@tingodelata.com.br\npubli: babu@mynd8.com.br', 4780481, '2026-01-15 13:42:34');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `instagram_cookie` (
   PRIMARY KEY (`id`),
   KEY `instagram_account_id` (`instagram_account_id`),
   CONSTRAINT `instagram_cookie_ibfk_1` FOREIGN KEY (`instagram_account_id`) REFERENCES `instagram_account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 -- Exportação de dados foi desmarcado.
 

@@ -15,59 +15,66 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- Copiando estrutura para tabela bigstats.bbb_participante
+DROP TABLE IF EXISTS `bbb_participante`;
 CREATE TABLE IF NOT EXISTS `bbb_participante` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(255) NOT NULL,
+  `nome_completo` varchar(255) DEFAULT NULL,
+  `profissao` varchar(255) DEFAULT NULL,
+  `cidade` varchar(150) DEFAULT NULL,
+  `estado` char(2) DEFAULT NULL,
+  `idade` tinyint(3) unsigned DEFAULT NULL,
   `eliminado` tinyint(1) NOT NULL DEFAULT 0,
   `grupo` enum('Pipoca','Camarote','Veterano') NOT NULL,
   `instagram` varchar(255) DEFAULT NULL,
   `detalhes` text DEFAULT NULL,
+  `ano_nascimento` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 -- Copiando dados para a tabela bigstats.bbb_participante: ~21 rows (aproximadamente)
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(1, 'Babu Santana', 0, 'Veterano', 'babusantana', 'Ator carioca, veterano do BBB20, conhecido pela resistência em paredões e por papéis fortes no cinema e na TV.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(2, 'Sol Vega', 0, 'Veterano', 'solvegaoficial', 'Atriz e empresária, veterana do BBB4, virou ícone de memes e momentos marcantes da era raiz do reality.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(3, 'Jonas Sulzbach', 0, 'Veterano', 'jonassulzbach', 'Modelo, influenciador fitness e veterano do BBB12, ficou em terceiro lugar e mantém carreira ligada à vida saudável.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(4, 'Sarah Andrade', 0, 'Veterano', 'sarahandrade', 'Influenciadora digital e ex-analista de marketing, veterana do BBB21, integrou o grupo estratégico G3.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(5, 'Alberto Cowboy', 0, 'Veterano', 'albertocowboy', 'Empresário rural e veterano do BBB7, famoso por rivalidades e perfil competitivo dentro do jogo.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(6, 'Ana Paula Renault', 0, 'Veterano', 'anapaularenault', 'Jornalista mineira, veterana do BBB16, conhecida pelo temperamento explosivo e bordões virais.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(7, 'Solange Couto', 0, 'Camarote', 'solangecouto', 'Atriz consagrada, participante do Camarote, com longa carreira em novelas e personagens populares.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(8, 'Aline Campos', 0, 'Camarote', 'soualinecampos', 'Atriz, empresária e ex-bailarina do Faustão, Camarote, ligada ao mundo fitness e espiritualidade.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(9, 'Juliano Floss', 0, 'Camarote', 'julianofloss', 'Dançarino profissional e influenciador, Camarote, famoso por vídeos virais e projetos de dança urbana.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(10, 'Edilson', 0, 'Camarote', 'edilsonjogador', 'Ex-jogador de futebol, Camarote, ídolo de torcida nos anos 90, conhecido por carisma e resenha.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(11, 'Henri Castelli', 0, 'Camarote', 'henricastelli', 'Ator de novelas globais, Camarote, carreira consolidada em papéis de galã e protagonistas.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(12, 'Breno', 0, 'Pipoca', 'brenocora', 'Biólogo, modelo e Pipoca vindo da Casa de Vidro, mistura perfil acadêmico com carreira artística.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(13, 'Brígido', 0, 'Pipoca', 'brigidoneto', 'Pipoca anônimo escolhido pelo público, perfil popular, trabalhador e focado em representar a vida comum.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(14, 'Jordana', 0, 'Pipoca', 'jordanaribmorais', 'Advogada de Brasília e influenciadora, Pipoca, entrou pelo voto popular com discurso de jogo estratégico.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(15, 'Marcelo', 0, 'Pipoca', 'oxemarcelo', 'Pipoca do Nordeste, selecionado na Casa de Vidro, carismático e com forte sotaque regional.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(16, 'Marciele', 0, 'Pipoca', 'marciele.albuquerque', 'Pipoca que passou pela Casa de Vidro, trabalha com comércio local e entrou pela votação do público.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(17, 'Maxiane', 0, 'Pipoca', 'maxiane', 'Pipoca escolhida por votação popular, perfil comunicativo e engajado em causas sociais.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(18, 'Milena', 0, 'Pipoca', 'tiamilenabbb', 'Pipoca revelada na Casa de Vidro, conhecida por carisma e forte presença nas redes após seleção.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(19, 'Paulo Augusto', 0, 'Pipoca', 'pauloaaugustocm', 'Pipoca apaixonado por animais, trabalha com projetos comunitários e entrou pelo voto do público.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(20, 'Pedro', 0, 'Pipoca', 'pedroespindolap', 'Pipoca vendedor ambulante e empreendedor digital, história de superação e foco em negócios.');
-INSERT INTO `bbb_participante` (`id`, `nome`, `eliminado`, `grupo`, `instagram`, `detalhes`) VALUES
-	(21, 'Samira', 0, 'Pipoca', 'samira_sagr', 'Pipoca destaque das Casas de Vidro, perfil extrovertido e competitivo, entrou com apoio popular.');
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(1, 'Babu Santana', 'Alexandre da Silva Santana', 'Ator e Cantor', 'Rio de Janeiro', 'RJ', 45, 0, 'Veterano', 'babusantana', 'Ator e ex-BBB20, natural do Rio de Janeiro, com carreira em teatro, TV e cinema; ficou conhecido por papéis marcantes além de sua longa trajetória no reality show.', 1979);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(2, 'Sol Vega', 'Solange Cristina Couto Maria', 'Atriz e Empresária', 'São Paulo', 'SP', 54, 0, 'Veterano', 'solvegaoficial', 'Atriz e empresária, de São Paulo, participante do BBB4; ficou conhecida por memética performance na edição, com passagens em televisão e negócios próprios.', 1978);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(3, 'Jonas Sulzbach', 'Jonas Fernando Sulzbach', 'Modelo e Influenciador', 'Lajeado', 'RS', 38, 0, 'Veterano', 'jonassulzbach', 'Modelo, empresário e influenciador de Lajeado (RS), terceiro colocado no BBB12; hoje compartilha estilo de vida fitness e projetos pessoais nas redes.', 1986);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(4, 'Sarah Andrade', 'Sarah Carolline Vieira de Andrade', 'Influenciadora e Analista de Marketing', 'Brasília', 'DF', 33, 0, 'Veterano', 'sarahandrade', 'Influenciadora digital e ex-BBB21 de Brasília (DF), voltou como veterana no BBB26; ganhou notoriedade no jogo por estratégia e presença marcante no G3.', 1991);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(5, 'Alberto Cowboy', 'Alberto Pimentel Baptista', 'Empresário Rural', 'Manhuaçu', 'MG', 42, 0, 'Veterano', 'albertocowboy', 'Empresário mineiro de Manhuaçu, veterano do BBB7, conhecido por rivalidades daquela edição; voltou como Veterano no BBB26.', 1976);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(6, 'Ana Paula Renault', 'Ana Paula Machado Renault', 'Jornalista', 'Belo Horizonte', 'MG', 41, 0, 'Veterano', 'anapaularenault', 'Jornalista mineira de Belo Horizonte e ex-BBB16, famosa pelo bordão “Olha ela!”; retorna à casa como Veterana no BBB26.', 1991);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(7, 'Solange Couto', 'Solange Couto dos Santos', 'Atriz', 'Rio de Janeiro', 'RJ', 67, 0, 'Camarote', 'solangecouto', 'Atriz consagrada do Rio de Janeiro, famosa por papéis em novelas como “O Clone” e “A Viagem”; participa do BBB26 grupo Camarote.', 1956);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(8, 'Aline Campos', 'Aline Campos da Silva', 'Atriz e Empresária', 'Rio de Janeiro', 'RJ', 37, 0, 'Camarote', 'soualinecampos', 'Atriz, empresária, apresentadora e ex-bailarina carioca; destaque em TV e redes sociais, integra o grupo Camarote do BBB26.', 1987);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(9, 'Juliano Floss', 'Juliano Floss Lucatel', 'Dançarino e Influenciador', 'Joinville', 'SC', 30, 0, 'Camarote', 'julianofloss', 'Dançarino e influenciador digital de Santa Catarina, com milhões de seguidores; membro do grupo Camarote no BBB26.', 2004);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(10, 'Edílson Capetinha', 'Edílson da Silva Ferreira', 'Ex-jogador de Futebol', 'Salvador', 'BA', 54, 0, 'Camarote', 'edilsonjogador', 'Ex-jogador de futebol baiano e campeão mundial em 2002 com a seleção brasileira, agora integrante do grupo Camarote no BBB26.', 1970);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(11, 'Henri Castelli', 'Henri Lincoln Fernandes Nascimento', 'Ator', 'São Paulo', 'SP', 46, 1, 'Camarote', 'henricastelli', 'Ator paulista com longa carreira em novelas e séries; entrou no BBB26 pelo grupo Camarote.', 1978);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(12, 'Breno', 'Breno Rangel Moreira Corã', 'Biólogo e Modelo', 'Contagem', 'MG', 33, 0, 'Pipoca', 'brenocora', 'Biólogo com mestrado em Biotecnologia, modelo e pesquisador de Minas Gerais/SC; entrou no BBB26 pelo grupo Pipoca após Casa de Vidro.', 1993);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(13, 'Brigido', 'Brigido Neto', 'Empreendedor e diretor de escola', 'Manaus', 'AM', 34, 0, 'Pipoca', 'brigidoneto', 'Empreendedor e diretor executivo de escola de Manaus (AM), formado em Engenharia de Produção; entrou no BBB26 como Pipoca pelo voto popular.', 1992);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(14, 'Jordana', 'Jordana Ribeiro Morais', 'Advogada e modelo', 'Brasília', 'DF', 29, 0, 'Pipoca', 'jordanaribmorais', 'Advogada, modelo e influenciadora digital de Brasília (DF); escolhida pelo público na Casa de Vidro para entrar no BBB26 como Pipoca.', 1997);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(15, 'Marcelo', 'Marcelo Alves de Araujo Filho', 'Médico', 'Currais Novos', 'RN', 31, 0, 'Pipoca', 'oxemarcelo', 'Médico potiguar de Currais Novos (RN), escolhido pelo público na Casa de Vidro para integrar o BBB26 como Pipoca.', 1995);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(16, 'Marciele', 'Marciele Albuquerque', 'Dançarina', 'Juruti ', 'PA', 32, 0, 'Pipoca', 'marciele.albuquerque', 'Dançarina e influenciadora de Juruti (PA), com forte presença digital; entrou no BBB26 como Pipoca após votação popular.', 1994);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(17, 'Maxiane', 'Maxiane Rodrigues', 'Influenciadora digital', 'Nazaré da Mata', 'PE', 32, 0, 'Pipoca', 'maxiane', 'Influenciadora digital e criadora de conteúdo de Nazaré da Mata (PE), escolhida pelo público para o BBB26 como Pipoca.', 1994);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(18, 'Milena', 'Milena Moreira Lages', 'Babá e recreadora de festa infantil', 'Teófilo Otoni', 'MG', 26, 0, 'Pipoca', 'tiamilenabbb', 'Babá e recreadora de festas infantil de Itambacuri (MG); entrou no BBB26 como Pipoca após votação na Casa de Vidro.', 2000);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(19, 'Paulo Augusto', 'Paulo Augusto Carvalhaes', 'Estudante de Veterinária e influenciador digital', 'Anápolis', 'GO', 21, 0, 'Pipoca', 'pauloaaugustocm', 'Estudante de veterinária, influenciador digital e amante dos animais de Inhumas (GO); entrou no BBB26 como Pipoca pelo voto popular.', 2005);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(20, 'Pedro', 'Pedro Henrique Espindola', 'Vendedor ambulante', 'Curitiba', 'PR', 22, 0, 'Pipoca', 'pedroespindolap', 'Vendedor ambulante de flores e trufas de Curitiba (PR), escolhido pelo público na Casa de Vidro para participar do BBB26 como Pipoca.', 2004);
+INSERT INTO `bbb_participante` (`id`, `nome`, `nome_completo`, `profissao`, `cidade`, `estado`, `idade`, `eliminado`, `grupo`, `instagram`, `detalhes`, `ano_nascimento`) VALUES
+	(21, 'Samira', 'Samira Sagr', 'Atendente de bar', 'Butiá', 'SC', 25, 0, 'Pipoca', 'samira_sagr', 'Atendente de bar e estudante de Direito, natural de São Jerônimo (RS), entrou no BBB26 como Pipoca após votação popular.', 2001);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
