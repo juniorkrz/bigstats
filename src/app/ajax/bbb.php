@@ -129,7 +129,7 @@ function processarDadosParticipante($participante, $obterHistorico = true, $obte
         "profissao" => $participante->profissao,
         "cidade" => $participante->cidade,
         "estado" => $participante->estado,
-        "idade" => $participante->idade,
+        "idade" => date('Y') - $participante->ano_nascimento,
     );
 
     if ($obterHistorico) {

@@ -15,6 +15,7 @@ class Participante
     public $cidade;
     public $estado;
     public $idade;
+    public $ano_nascimento;
 
     public function __construct(
         $id = null,
@@ -27,7 +28,7 @@ class Participante
         $profissao = null,
         $cidade = null,
         $estado = null,
-        $idade = null
+        $ano_nascimento = null
     ) {
         $this->id = $id;
         $this->nome = $nome;
@@ -39,7 +40,7 @@ class Participante
         $this->profissao = $profissao;
         $this->cidade = $cidade;
         $this->estado = $estado;
-        $this->idade = $idade;
+        $this->ano_nascimento = $ano_nascimento;
     }
 
     public function getTableName()
