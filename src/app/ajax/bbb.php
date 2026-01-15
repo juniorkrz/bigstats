@@ -142,6 +142,54 @@ function processarDadosParticipante($participante, $obterHistorico = true, $obte
         $dadosParticipante['historicoUltimas24Hrs'] = $ultimas24Hrs;
     }
 
+    if ($obterCrescimento) {
+
+        $atual = (int) $dadosInstagram->followers_count;
+
+        // tenta pegar dado de ~30 dias atrás
+        $historicoMesPassado = obterHistoricoInstagramMesPassado($dadosInstagram->instagram_id);
+
+        // fallback: usa o mais antigo se não existir registro de 30 dias
+        if (!$historicoMesPassado && $obterHistoricoMaisAntigo) {
+            $historicoMesPassado = obterHistoricoInstagramMaisAntigo($dadosInstagram->instagram_id);
+        }
+
+        if ($historicoMesPassado) {
+            $antigo = (int) $historicoMesPassado['seguidores'];
+
+            $crescimento = $atual - $antigo;
+
+            if ($antigo > 0) {
+                $percentual = ($crescimento / $antigo) * 100;
+            } else {
+                $percentual = 0;
+            }
+
+            // tendência
+            if ($crescimento > 0) {
+                $tendencia = "up";
+            } elseif ($crescimento < 0) {
+                $tendencia = "down";
+            } else {
+                $tendencia = "stable";
+            }
+
+            $dadosParticipante["crescimentoMensal"] = $crescimento;
+
+            $sinal = $percentual > 0 ? "+" : "";
+            $dadosParticipante["crescimentoMensalPercentual"] =
+                $sinal . number_format($percentual, 2, ',', '.') . "%";
+
+            $dadosParticipante["crescimentoTendencia"] = $tendencia;
+        } else {
+            // sem histórico suficiente
+            $dadosParticipante["crescimentoMensal"] = 0;
+            $dadosParticipante["crescimentoMensalPercentual"] = "0%";
+            $dadosParticipante["crescimentoTendencia"] = "stable";
+        }
+    }
+
+
     return $dadosParticipante;
 }
 
@@ -183,4 +231,18 @@ function obterParticipantes()
     }
 
     return $participantes;
+}
+
+function obterHistoricoInstagramMesPassado($instagram_id)
+{
+    $query = "
+        SELECT *
+        FROM instagram_user_history
+        WHERE instagram_id = :instagram_id
+          AND created_at <= DATE_SUB(NOW(), INTERVAL 30 DAY)
+        ORDER BY created_at DESC
+        LIMIT 1
+    ";
+
+    return getInstagramHistoryByQuery($instagram_id, $query);
 }

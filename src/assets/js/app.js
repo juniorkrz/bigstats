@@ -81,19 +81,48 @@ const exibirParticipante = (participante) => {
                 $(this).html(participante.seguidores.toLocaleString('pt-BR'));
                 break;
 
+            case 'crescimento_mensal':
+                const $icon = $(this).find('i');
+                switch (participante.crescimentoTendencia) {
+                    case 'up':
+                        $icon.removeClass('fa-arrow-down');
+                        $icon.removeClass('text-danger');
+                        $icon.addClass('fa-arrow-up');
+                        break;
+
+                    case 'down':
+                        $icon.removeClass('fa-arrow-up');
+                        $icon.addClass('fa-arrow-down');
+                        $icon.addClass('text-danger');
+                        break;
+
+                    default:
+                        $icon.removeClass('fa-arrow-up');
+                        $icon.removeClass('fa-arrow-down');
+                        break;
+                }
+
+                const $span = $(this).find('span');
+                $span.html(participante.crescimentoMensal.toLocaleString('pt-BR'));
+                break;
+
+            case 'crescimento_mensal_percentual':
+                $(this).html(participante.crescimentoMensalPercentual);
+                break;
+
+
             default:
                 $(this).html(participante[key]);
         }
     });
 
-    updateChart('chartParticipante', participante.historicoInstagram);
+    updateChart('followersChart', participante.historicoInstagram);
 };
 
 /* =======================
    GRÁFICOS
 ======================= */
 const createChart = (chartId) => {
-    console.log(chartId)
     const ctx = document.getElementById(chartId).getContext("2d");
     const gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
 
@@ -150,10 +179,13 @@ async function startApp() {
 
     // Lista de participantes (avatars)
     participantes.forEach((p, i) => {
-        $('.participantes').append(`
-            <img class="avatar participante mx-1 ${p.eliminado ? 'eliminado' : ''}"
-                 data-index="${i}"
-                 src="data:image/png;base64,${p.foto}">
+        $('.participantes .row').append(`
+            <div class="participante avatar-cabecograma mx-1" data-index="${i}">
+              <img class="avatar participante mx-1 ${p.eliminado ? 'eliminado' : ''}"
+              src="data:image/png;base64,${p.foto}"
+              data-index="${i}"
+              alt="${p.nome}">
+            </div>
         `);
     });
 
@@ -170,7 +202,7 @@ async function startApp() {
     });
 
     // Modal
-    $('.participantes').on('click', '.avatar', function () {
+    $('.profile-header').on('click', '.profile-avatar', function () {
         const p = participantes[$(this).data('index')];
 
         Swal.fire({
