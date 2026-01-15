@@ -14,7 +14,6 @@ class Participante
     public $profissao;
     public $cidade;
     public $estado;
-    public $idade;
     public $ano_nascimento;
 
     public function __construct(

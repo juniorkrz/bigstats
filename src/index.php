@@ -107,18 +107,6 @@ $lastCommitHash = bin2hex(random_bytes(16));
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="col-lg-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Distribuição de Seguidores</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-container">
-                                    <canvas id="demographicsChart" height="300"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
                 </div>
 
                 <!-- Additional Info -->
