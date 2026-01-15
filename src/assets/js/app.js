@@ -203,6 +203,8 @@ async function startApp() {
     $('.participantes').on('click', '.avatar', function () {
         participanteIndex = $(this).data('index');
         exibirParticipante(participantes[participanteIndex]);
+        pausarLoop();
+        iniciarLoop();
     });
 
     // Botão Instagram
