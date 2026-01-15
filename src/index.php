@@ -23,8 +23,10 @@ $lastCommitHash = bin2hex(random_bytes(16));
 
     <div class="main-panel">
         <?php require_once('./components/navbar.php'); ?>
-
-        <div id="stats" class="content">
+      <div id="loader" class="content d-flex justify-content-center align-items-center">
+        <div class="spinner"></div>
+      </div>
+        <div id="stats" class="content d-none animate__animated animate__fadeIn">
             <div class="container-fluid">
                 <div class="participantes d-flex justify-content-center align-items-center mb-3">
                     <div class="row w-100 d-flex justify-content-center align-items-center">

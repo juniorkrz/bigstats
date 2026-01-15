@@ -232,8 +232,9 @@ async function startApp() {
 
     if ($('#autoSwitch').is(':checked')) iniciarLoop();
 
-    $('.avatar').removeClass('d-none');
-    $('#loader').addClass('d-none');
+    // Esconde o spinner e exibe as duplas quando o carregamento terminar
+    $('.spinner').addClass('animate__animated animate__fadeOut');
+    $('#loader').removeClass('d-flex').addClass('d-none');
     $('#stats').removeClass('d-none');
 
     setInterval(async () => {
