@@ -124,6 +124,8 @@ const exibirParticipante = (participante) => {
         }
     });
 
+    $('.avatar-cabecograma').removeClass('active');
+    $('.avatar-cabecograma[data-index="' + participanteIndex + '"]').addClass('active');
     updateChart('followersChart', participante.historicoInstagram);
 };
 
