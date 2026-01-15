@@ -14,7 +14,7 @@
         <ul class="nav">
             <li>
                 <a href="./index.php">
-                    <i class="tim-icons icon-chart-pie-36"></i>
+                    <i class="tim-icons icon-chart-pie-36"></i><!-- TODO: Colocar icone correto -->
                     <p>Participantes</p>
                 </a>
             </li>

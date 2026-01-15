@@ -56,7 +56,7 @@ $lastCommitHash = bin2hex(random_bytes(16));
 
                 <!-- Stats Cards -->
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="card stats-card mb-4">
                             <div class="card-body text-center">
                                 <div class="stats-number participante" data="seguidores">0</div>
@@ -67,23 +67,24 @@ $lastCommitHash = bin2hex(random_bytes(16));
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="col-md-4">
+                    <div class="col-md-4">
                         <div class="card stats-card mb-4">
                             <div class="card-body text-center">
-                                <div class="stats-number" id="engajamento">0%</div>
-                                <div class="stats-label">Taxa de Engajamento</div>
-                                <div class="mt-3">
-                                    <i class="fas fa-chart-line fa-2x text-success"></i>
+                                <div class="stats-number participante" id="ultimos30dias" data="crescimento_30_dias_percentual">0%</div>
+                                <div class="stats-label">Últimos 30 dias</div>
+                                <div class="mt-3 participante" data="crescimento_30_dias">
+                                    <i class="fas fa-calendar-alt fa-2x text-success"></i> <span></span>
                                 </div>
                             </div>
                         </div>
-                    </div> -->
-                    <div class="col-md-6">
+                    </div>
+
+                    <div class="col-md-4">
                         <div class="card stats-card mb-4">
                             <div class="card-body text-center">
-                                <div class="stats-number participante" id="crescimento" data="crescimento_mensal_percentual">+0%</div>
-                                <div class="stats-label">Crescimento Mensal</div>
-                                <div class="mt-3 participante" data="crescimento_mensal">
+                                <div class="stats-number participante" id="crescimentoSemanal" data="crescimento_semanal_percentual">+0%</div>
+                                <div class="stats-label">última semana</div>
+                                <div class="mt-3 participante" data="crescimento_semanal">
                                     <i class="fas fa-arrow-up fa-2x text-info"></i> <span></span>
                                 </div>
                             </div>

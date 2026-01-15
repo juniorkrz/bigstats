@@ -86,9 +86,9 @@ const exibirParticipante = (participante) => {
                 $(this).html(participante.seguidores.toLocaleString('pt-BR'));
                 break;
 
-            case 'crescimento_mensal':
+            case 'crescimento_semanal':
                 const $icon = $(this).find('i');
-                switch (participante.crescimentoTendencia) {
+                switch (participante.crescimento_tendencia) {
                     case 'up':
                         $icon.removeClass('fa-arrow-down');
                         $icon.removeClass('text-danger');
@@ -108,11 +108,11 @@ const exibirParticipante = (participante) => {
                 }
 
                 const $span = $(this).find('span');
-                $span.html(participante.crescimentoMensal.toLocaleString('pt-BR'));
+                $span.html(participante.crescimento_semanal.toLocaleString('pt-BR'));
                 break;
 
-            case 'crescimento_mensal_percentual':
-                $(this).html(participante.crescimentoMensalPercentual);
+            case 'crescimento_semanal_percentual':
+                $(this).html(participante.crescimento_semanal_percentual);
                 break;
 
             case 'cidade_estado':

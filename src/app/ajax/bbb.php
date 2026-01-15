@@ -125,6 +125,7 @@ function processarDadosParticipante($participante, $obterHistorico = true, $obte
         "seguidores" => $dadosInstagram->followers_count,
         "verificado" => $dadosInstagram->is_verified,
         "foto" => $dadosInstagram->profile_pic_base64,
+        "biografia" => $dadosInstagram->biography,
         "nome_completo" => $participante->nome_completo,
         "profissao" => $participante->profissao,
         "cidade" => $participante->cidade,
@@ -147,52 +148,78 @@ function processarDadosParticipante($participante, $obterHistorico = true, $obte
         $dadosParticipante['historicoUltimas24Hrs'] = $ultimas24Hrs;
     }
 
-    if ($obterCrescimento) {
+if ($obterCrescimento) {
 
-        $atual = (int) $dadosInstagram->followers_count;
+    $atual = (int) $dadosInstagram->followers_count;
 
-        // tenta pegar dado de ~30 dias atrás
-        $historicoMesPassado = obterHistoricoInstagramMesPassado($dadosInstagram->instagram_id);
+    /* =========================
+       CRESCIMENTO SEMANAL
+    ========================== */
 
-        // fallback: usa o mais antigo se não existir registro de 30 dias
-        if (!$historicoMesPassado && $obterHistoricoMaisAntigo) {
-            $historicoMesPassado = obterHistoricoInstagramMaisAntigo($dadosInstagram->instagram_id);
-        }
+    $historicoSemanaPassada = obterHistoricoInstagramSemanaPassada($dadosInstagram->instagram_id);
 
-        if ($historicoMesPassado) {
-            $antigo = (int) $historicoMesPassado['seguidores'];
-
-            $crescimento = $atual - $antigo;
-
-            if ($antigo > 0) {
-                $percentual = ($crescimento / $antigo) * 100;
-            } else {
-                $percentual = 0;
-            }
-
-            // tendência
-            if ($crescimento > 0) {
-                $tendencia = "up";
-            } elseif ($crescimento < 0) {
-                $tendencia = "down";
-            } else {
-                $tendencia = "stable";
-            }
-
-            $dadosParticipante["crescimentoMensal"] = $crescimento;
-
-            $sinal = $percentual > 0 ? "+" : "";
-            $dadosParticipante["crescimentoMensalPercentual"] =
-                $sinal . number_format($percentual, 2, ',', '.') . "%";
-
-            $dadosParticipante["crescimentoTendencia"] = $tendencia;
-        } else {
-            // sem histórico suficiente
-            $dadosParticipante["crescimentoMensal"] = 0;
-            $dadosParticipante["crescimentoMensalPercentual"] = "0%";
-            $dadosParticipante["crescimentoTendencia"] = "stable";
-        }
+    if (!$historicoSemanaPassada && $obterHistoricoMaisAntigo) {
+        $historicoSemanaPassada = obterHistoricoInstagramMaisAntigo($dadosInstagram->instagram_id);
     }
+
+    if ($historicoSemanaPassada) {
+        $antigoSemana = (int) $historicoSemanaPassada['seguidores'];
+        $crescimentoSemanal = $atual - $antigoSemana;
+
+        $percentualSemanal = $antigoSemana > 0
+            ? ($crescimentoSemanal / $antigoSemana) * 100
+            : 0;
+
+        if ($crescimentoSemanal > 0) {
+            $tendencia = "up";
+        } elseif ($crescimentoSemanal < 0) {
+            $tendencia = "down";
+        } else {
+            $tendencia = "stable";
+        }
+
+        $sinalSemanal = $percentualSemanal > 0 ? "+" : "";
+
+        $dadosParticipante["crescimento_semanal"] = $crescimentoSemanal;
+        $dadosParticipante["crescimento_semanal_percentual"] =
+            $sinalSemanal . number_format($percentualSemanal, 2, ',', '.') . "%";
+        $dadosParticipante["crescimento_tendencia"] = $tendencia;
+
+    } else {
+        $dadosParticipante["crescimento_semanal"] = 0;
+        $dadosParticipante["crescimento_semanal_percentual"] = "0%";
+        $dadosParticipante["crescimento_tendencia"] = "stable";
+    }
+
+    /* =========================
+       CRESCIMENTO 30 DIAS
+    ========================== */
+
+    $historicoMesPassado = obterHistoricoInstagramMesPassado($dadosInstagram->instagram_id);
+
+    if (!$historicoMesPassado && $obterHistoricoMaisAntigo) {
+        $historicoMesPassado = obterHistoricoInstagramMaisAntigo($dadosInstagram->instagram_id);
+    }
+
+    if ($historicoMesPassado) {
+        $antigoMes = (int) $historicoMesPassado['seguidores'];
+        $crescimento30 = $atual - $antigoMes;
+
+        $percentual30 = $antigoMes > 0
+            ? ($crescimento30 / $antigoMes) * 100
+            : 0;
+
+        $sinal30 = $percentual30 > 0 ? "+" : "";
+
+        $dadosParticipante["crescimento_30_dias"] = $crescimento30;
+        $dadosParticipante["crescimento_30_dias_percentual"] =
+            $sinal30 . number_format($percentual30, 2, ',', '.') . "%";
+
+    } else {
+        $dadosParticipante["crescimento_30_dias"] = 0;
+        $dadosParticipante["crescimento_30_dias_percentual"] = "0%";
+    }
+}
 
 
     return $dadosParticipante;
@@ -214,7 +241,7 @@ function obterParticipantes()
     $participantes = [];
 
     $repParticipante = new Repository(Participante::class);
-    $repParticipante->findAll();
+    $repParticipante->findAll("ORDER BY nome ASC");
 
     $obterHistorico = true;
     $obterHistoricoMaisAntigo = true;
@@ -245,6 +272,20 @@ function obterHistoricoInstagramMesPassado($instagram_id)
         FROM instagram_user_history
         WHERE instagram_id = :instagram_id
           AND created_at <= DATE_SUB(NOW(), INTERVAL 30 DAY)
+        ORDER BY created_at DESC
+        LIMIT 1
+    ";
+
+    return getInstagramHistoryByQuery($instagram_id, $query);
+}
+
+function obterHistoricoInstagramSemanaPassada($instagram_id)
+{
+    $query = "
+        SELECT *
+        FROM instagram_user_history
+        WHERE instagram_id = :instagram_id
+          AND created_at <= DATE_SUB(NOW(), INTERVAL 7 DAY)
         ORDER BY created_at DESC
         LIMIT 1
     ";
