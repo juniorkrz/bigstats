@@ -21,7 +21,8 @@ require_once __DIR__ . "/../config.php";
 
 // Definir o nome do arquivo de log como o nome do script atual
 $runId = uniqid();
-$logFile = basename(__FILE__, '.php') . '.log';
+$logFile = __DIR__ . '/' . basename(__FILE__, '.php') . '.log';
+
 
 // Função para registrar mensagens no log com data e hora
 function logMessage($message, $sendTelegram = false)
