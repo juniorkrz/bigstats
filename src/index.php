@@ -10,12 +10,23 @@ $lastCommitHash = bin2hex(random_bytes(16));
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="theme-color" content="#3358f4">
-    <title><?php echo "$appName $currentYear - $pageTitle"?></title>
-    <?php require_once('./components/css.php'); ?>
-    <?php require_once('./components/tags.php'); ?>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="theme-color" content="#3358f4">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#3358f4">
+  <meta name="msapplication-navbutton-color" content="#3358f4">
+  <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/favicon/apple-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicon/favicon-16x16.png">
+  <link rel="manifest" href="./assets/manifest/site.webmanifest">
+  <title>
+    <?php echo "$appName $currentYear - $pageTitle" ?>
+  </title>
+  <!-- CSS -->
+  <?php require_once('./components/css.php'); ?>
+  <!-- Tags -->
+  <?php require_once('./components/tags.php'); ?>
 </head>
 <body class="dark-edition">
 <div class="wrapper">
