@@ -97,7 +97,7 @@ async function startApp() {
                 data: 'nome',
                 title: 'Participante',
                 render: function (data, type, row) {
-                    return `<img style="width: 25px;" class="${row.eliminado ? 'eliminado ' : ''}mr-1 rounded-image cursor-pointer mini-avatar" src="data:image/png;base64,${row.foto}" alt="Participante ${row.id}" data-participante-id="${row.id}">${row.nome}${row.verificado ? ' <img src="./assets/img/verificado.webp" style="width: 15px" class="">' : ''}`;
+                    return `<img style="width: 25px;" class="${row.eliminado ? 'eliminado ' : ''}mr-1 rounded-image cursor-pointer mini-avatar" src="data:image/png;base64,${row.foto}" alt="Participante ${row.id}" data-participante-id="${row.id}"><span data-participante-id="${row.id}" class="cursor-pointer participante-name">${row.nome}</span>${row.verificado ? ' <img src="./assets/img/verificado.webp" style="width: 15px" class="">' : ''}`;
                 }
             },
             { data: 'eliminado', visible: false },
@@ -118,7 +118,7 @@ async function startApp() {
                     const diff = row.seguidores - row.historicoInstagramMaisAntigo.seguidores;
                     const color = diff > 0 ? 'success' : 'danger';
 
-                    return ` <small class="text-${color}">` + (diff > 0 ? '+' : '-') + (diff).toLocaleString('pt-BR') + '</small>';
+                    return ` <small class="text-${color}">` + (diff >= 0 ? '+' : '-') + (diff).toLocaleString('pt-BR') + '</small>';
                 }
             },
             { data: 'verificado', visible: false },
@@ -159,7 +159,7 @@ async function startApp() {
     }).draw();
 
     // Modal com informações de um participante
-    $('.mini-avatar').click(function () {
+    $('.mini-avatar, .participante-name').click(function () {
         const participanteId = $(this).data('participante-id');
         // find the participant object based on its id
         const participante = participantes.find(participante => participante.id === participanteId);

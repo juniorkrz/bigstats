@@ -4,6 +4,7 @@ namespace App\backend;
 
 use App\model\InstagramUser;
 use App\model\InstagramUserHistory;
+use App\model\Participante;
 use App\util\InstagramAPI;
 use App\util\Repository;
 use App\util\Telegram;
@@ -55,22 +56,50 @@ $instagramApi = new InstagramAPI();
 $repInstagramUser = new Repository(InstagramUser::class);
 $repInstagramUserHistory = new Repository(InstagramUserHistory::class);
 
-// Buscar participantes que não atualizam a mais de 30 minutos
+// Buscar participantes que não atualizam a mais de 60 minutos
 $now = date('Y-m-d H:i:s');
-$thirtyMinutesAgo = date('Y-m-d H:i:s', strtotime('-30 minutes', strtotime($now)));
+$thirtyMinutesAgo = date('Y-m-d H:i:s', strtotime('-60 minutes', strtotime($now)));
 $instagramUsers = $repInstagramUser->findByQuery(
     "SELECT * FROM instagram_user WHERE updated_at < :thirtyMinutesAgo ORDER BY updated_at;",
     ['thirtyMinutesAgo' => $thirtyMinutesAgo]
 );
 
+// Busca participantes que nunca foram atualizados
+$repParticipante = new Repository(Participante::class);
+$repParticipante->findByQuery(
+    "SELECT p.*
+     FROM bbb_participante p
+     LEFT JOIN instagram_user iu
+            ON iu.username = p.instagram
+     WHERE iu.username IS NULL
+       AND p.instagram IS NOT NULL
+       AND p.instagram <> ''"
+    );
+
+if (!$repParticipante->isEmpty()) {
+    $instagramUsers = [];
+
+    foreach ($repParticipante->objects as $participante) {
+        $instagramUser = new InstagramUser();
+        $instagramUser->username = $participante->instagram;
+        $instagramUsers[] = $instagramUser;
+    }
+
+}
 
 try {
     foreach ($instagramUsers as $instagramUser /* @var $instagramUser InstagramUser */) {
         $username = $instagramUser->username;
         $instagramUser = $instagramApi->getUserData($username);
 
+        $apiUser = $instagramApi->getApiUser();
+        logMessage("API User: $apiUser->username - Consultou os dados do usuário $username");
+
         if (!$instagramUser) {
             logMessage("Não foi possível obter os dados do usuário do Instagram.", true);
+            // Aguardar o tempo de sleep definido, se necessário
+            logMessage("Aguardando $sleepTime segundos...");
+            sleep($sleepTime);
             continue;
         }
 

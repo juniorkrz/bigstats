@@ -1,34 +1,9 @@
 <?php
 
-use App\model\Dupla;
 use App\model\InstagramUser;
 use App\model\InstagramUserHistory;
 use App\model\Participante;
 use App\util\Repository;
-
-function somarHistoricoInstagram($historicoA, $historicoB)
-{
-    // Criar um array para armazenar o histórico combinado
-    $historicoCombinado = [];
-
-    // Iterar sobre o histórico de ambos os participantes
-    foreach ($historicoA as $index => $registroA) {
-        // Encontrar o dia correspondente no histórico do participante B
-        $registroB = isset($historicoB[$index]) ? $historicoB[$index] : null;
-
-        // Somar os seguidores dos dois participantes para o dia atual
-        $seguidoresA = $registroA['followers'];
-        $seguidoresB = $registroB ? $registroB['followers'] : 0;
-
-        // Adicionar os seguidores combinados no histórico
-        $historicoCombinado[] = [
-            'day' => $registroA['day'], // Usar o dia do participante A (assumindo que ambos têm o mesmo dia)
-            'followers' => $seguidoresA + $seguidoresB
-        ];
-    }
-
-    return $historicoCombinado;
-}
 
 function getInstagramHistoryByQuery($instagram_id, $query) {
     $repInstagramUserHistory = new Repository(InstagramUserHistory::class);
@@ -131,9 +106,13 @@ function obterDadosInstagram($username)
     return $repInstagramUser->getFirst();
 }
 
-function processarDadosParticipante($participante, $obterHistorico = true, $obterHistoricoMaisAntigo = false, $obterUltimas24Hrs = false)
+function processarDadosParticipante($participante, $obterHistorico = true, $obterHistoricoMaisAntigo = false, $obterUltimas24Hrs = false, $obterCrescimento = true)
 {
     $dadosInstagram = obterDadosInstagram($participante->instagram);
+
+    if (!$dadosInstagram) {
+        return null;
+    }
 
     $dadosParticipante = array(
         "id" => $participante->id,
@@ -146,6 +125,12 @@ function processarDadosParticipante($participante, $obterHistorico = true, $obte
         "seguidores" => $dadosInstagram->followers_count,
         "verificado" => $dadosInstagram->is_verified,
         "foto" => $dadosInstagram->profile_pic_base64,
+        "biografia" => $dadosInstagram->biography,
+        "nome_completo" => $participante->nome_completo,
+        "profissao" => $participante->profissao,
+        "cidade" => $participante->cidade,
+        "estado" => $participante->estado,
+        "idade" => date('Y') - $participante->ano_nascimento,
     );
 
     if ($obterHistorico) {
@@ -163,6 +148,80 @@ function processarDadosParticipante($participante, $obterHistorico = true, $obte
         $dadosParticipante['historicoUltimas24Hrs'] = $ultimas24Hrs;
     }
 
+if ($obterCrescimento) {
+
+    $atual = (int) $dadosInstagram->followers_count;
+
+    /* =========================
+       CRESCIMENTO SEMANAL
+    ========================== */
+
+    $historicoSemanaPassada = obterHistoricoInstagramSemanaPassada($dadosInstagram->instagram_id);
+
+    if (!$historicoSemanaPassada && $obterHistoricoMaisAntigo) {
+        $historicoSemanaPassada = obterHistoricoInstagramMaisAntigo($dadosInstagram->instagram_id);
+    }
+
+    if ($historicoSemanaPassada) {
+        $antigoSemana = (int) $historicoSemanaPassada['seguidores'];
+        $crescimentoSemanal = $atual - $antigoSemana;
+
+        $percentualSemanal = $antigoSemana > 0
+            ? ($crescimentoSemanal / $antigoSemana) * 100
+            : 0;
+
+        if ($crescimentoSemanal > 0) {
+            $tendencia = "up";
+        } elseif ($crescimentoSemanal < 0) {
+            $tendencia = "down";
+        } else {
+            $tendencia = "stable";
+        }
+
+        $sinalSemanal = $percentualSemanal > 0 ? "+" : "";
+
+        $dadosParticipante["crescimento_semanal"] = $crescimentoSemanal;
+        $dadosParticipante["crescimento_semanal_percentual"] =
+            $sinalSemanal . number_format($percentualSemanal, 2, ',', '.') . "%";
+        $dadosParticipante["crescimento_tendencia"] = $tendencia;
+
+    } else {
+        $dadosParticipante["crescimento_semanal"] = 0;
+        $dadosParticipante["crescimento_semanal_percentual"] = "0%";
+        $dadosParticipante["crescimento_tendencia"] = "stable";
+    }
+
+    /* =========================
+       CRESCIMENTO 30 DIAS
+    ========================== */
+
+    $historicoMesPassado = obterHistoricoInstagramMesPassado($dadosInstagram->instagram_id);
+
+    if (!$historicoMesPassado && $obterHistoricoMaisAntigo) {
+        $historicoMesPassado = obterHistoricoInstagramMaisAntigo($dadosInstagram->instagram_id);
+    }
+
+    if ($historicoMesPassado) {
+        $antigoMes = (int) $historicoMesPassado['seguidores'];
+        $crescimento30 = $atual - $antigoMes;
+
+        $percentual30 = $antigoMes > 0
+            ? ($crescimento30 / $antigoMes) * 100
+            : 0;
+
+        $sinal30 = $percentual30 > 0 ? "+" : "";
+
+        $dadosParticipante["crescimento_30_dias"] = $crescimento30;
+        $dadosParticipante["crescimento_30_dias_percentual"] =
+            $sinal30 . number_format($percentual30, 2, ',', '.') . "%";
+
+    } else {
+        $dadosParticipante["crescimento_30_dias"] = 0;
+        $dadosParticipante["crescimento_30_dias_percentual"] = "0%";
+    }
+}
+
+
     return $dadosParticipante;
 }
 
@@ -177,71 +236,59 @@ function obterParticipante($id)
     return processarDadosParticipante($participante);
 }
 
-function obterPartipantesDupla(Dupla $dupla)
-{
-    $participanteA = obterParticipante($dupla->id_participante_1);
-    $participanteB = obterParticipante($dupla->id_participante_2);
-
-    return (object) array(
-        'participanteA' => (object) $participanteA,
-        'participanteB' => (object) $participanteB
-    );
-}
-
-function obterDuplas()
-{
-    $duplas = [];
-
-    $repDupla = new Repository(Dupla::class);
-    $repDupla->findAll();
-
-    foreach ($repDupla->objects as $dupla) {
-        $participantesDupla = obterPartipantesDupla($dupla);
-        $participanteA = $participantesDupla->participanteA;
-        $participanteB = $participantesDupla->participanteB;
-
-        // Obter históricos de Instagram de cada participante
-        $historicoInstagramA = $participanteA->historicoInstagram;
-        $historicoInstagramB = $participanteB->historicoInstagram;
-
-        // Somar os históricos dos dois participantes
-        $historicoInstagramDupla = somarHistoricoInstagram($historicoInstagramA, $historicoInstagramB);
-
-        $duplas[] = array(
-            'id' => $dupla->id,
-            'detalhes' => $dupla->detalhes,
-            'grupo' => $dupla->grupo,
-            'grauRelacao' => $dupla->grau_relacao,
-            'grauRelacaoFormatada' => "$participanteA->nome e $participanteB->nome são " . strtolower($dupla->grau_relacao) . ".",
-            'participanteA' => $participantesDupla->participanteA,
-            'participanteB' => $participantesDupla->participanteB,
-            'seguidores' => $participanteA->seguidores + $participanteB->seguidores,
-            'historicoInstagram' => $historicoInstagramDupla
-        );
-    }
-
-    return $duplas;
-}
-
 function obterParticipantes()
 {
     $participantes = [];
 
     $repParticipante = new Repository(Participante::class);
-    $repParticipante->findAll();
+    $repParticipante->findAll("ORDER BY nome ASC");
 
-    $obterHistorico = false;
+    $obterHistorico = true;
     $obterHistoricoMaisAntigo = true;
     $obterHistoricoUltimas24Hrs = false;
 
     foreach ($repParticipante->objects as $participante) {
-        $participantes[] = processarDadosParticipante(
+        $dados = processarDadosParticipante(
             $participante,
             $obterHistorico,
             $obterHistoricoMaisAntigo,
             $obterHistoricoUltimas24Hrs
         );
+
+        if (empty($dados)) {
+            continue;
+        }
+
+        $participantes[] = $dados;
     }
 
     return $participantes;
+}
+
+function obterHistoricoInstagramMesPassado($instagram_id)
+{
+    $query = "
+        SELECT *
+        FROM instagram_user_history
+        WHERE instagram_id = :instagram_id
+          AND created_at <= DATE_SUB(NOW(), INTERVAL 30 DAY)
+        ORDER BY created_at DESC
+        LIMIT 1
+    ";
+
+    return getInstagramHistoryByQuery($instagram_id, $query);
+}
+
+function obterHistoricoInstagramSemanaPassada($instagram_id)
+{
+    $query = "
+        SELECT *
+        FROM instagram_user_history
+        WHERE instagram_id = :instagram_id
+          AND created_at <= DATE_SUB(NOW(), INTERVAL 7 DAY)
+        ORDER BY created_at DESC
+        LIMIT 1
+    ";
+
+    return getInstagramHistoryByQuery($instagram_id, $query);
 }

@@ -376,7 +376,9 @@ class Repository
                 }
 
                 // Atribuir o valor convertido à propriedade do objeto
-                $object->$column = $value;
+                if (property_exists($object, $column)) {
+                    $object->$column = $value;
+                }
             }
 
             $objects[$object->$primaryKey] = $object;

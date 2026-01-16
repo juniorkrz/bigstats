@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
--- Servidor:                     35.247.249.160
--- Versão do servidor:           10.11.6-MariaDB-0+deb12u1 - Debian 12
+-- Servidor:                     192.168.1.5
+-- Versão do servidor:           10.11.14-MariaDB-0+deb12u2 - Debian 12
 -- OS do Servidor:               debian-linux-gnu
--- HeidiSQL Versão:              12.8.0.6908
+-- HeidiSQL Versão:              12.11.0.7065
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -15,6 +15,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- Copiando estrutura para tabela bigstats.instagram_cookie
+DROP TABLE IF EXISTS `instagram_cookie`;
 CREATE TABLE IF NOT EXISTS `instagram_cookie` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -25,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `instagram_cookie` (
   PRIMARY KEY (`id`),
   KEY `instagram_account_id` (`instagram_account_id`),
   CONSTRAINT `instagram_cookie_ibfk_1` FOREIGN KEY (`instagram_account_id`) REFERENCES `instagram_account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 -- Exportação de dados foi desmarcado.
 
