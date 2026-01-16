@@ -172,13 +172,13 @@ a:hover {
   width: 150px;
   height: 150px;
   object-fit: cover;
-  border: 5px solid #5696ce;
+  border: 5px solid #1784eb;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   cursor: pointer;
 }
 
 .profile-avatar:hover {
-  border: 5px solid #96ceff;
+  border: 5px solid #369af8;
   transition: border-color 0.3s ease-in-out;
 }
 
