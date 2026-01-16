@@ -124,6 +124,8 @@ const exibirParticipante = (participante) => {
         }
     });
 
+    $('.avatar-cabecograma').removeClass('active');
+    $('.avatar-cabecograma[data-index="' + participanteIndex + '"]').addClass('active');
     updateChart('followersChart', participante.historicoInstagram);
 };
 
@@ -188,8 +190,8 @@ async function startApp() {
     // Lista de participantes (avatars)
     participantes.forEach((p, i) => {
         $('.participantes .row').append(`
-            <div class="participante avatar-cabecograma mx-1" data-index="${i}">
-              <img class="avatar participante mx-1 ${p.eliminado ? 'eliminado' : ''}"
+            <div class="participante avatar-cabecograma" data-index="${i}">
+              <img class="avatar participante ${p.eliminado ? 'eliminado' : ''}"
               src="data:image/png;base64,${p.foto}"
               data-index="${i}"
               alt="${p.nome}">
@@ -201,6 +203,8 @@ async function startApp() {
     $('.participantes').on('click', '.avatar', function () {
         participanteIndex = $(this).data('index');
         exibirParticipante(participantes[participanteIndex]);
+        pausarLoop();
+        iniciarLoop();
     });
 
     // Botão Instagram
@@ -228,8 +232,9 @@ async function startApp() {
 
     if ($('#autoSwitch').is(':checked')) iniciarLoop();
 
-    $('.avatar').removeClass('d-none');
-    $('#loader').addClass('d-none');
+    // Esconde o spinner e exibe as duplas quando o carregamento terminar
+    $('.spinner').addClass('animate__animated animate__fadeOut');
+    $('#loader').removeClass('d-flex').addClass('d-none');
     $('#stats').removeClass('d-none');
 
     setInterval(async () => {
