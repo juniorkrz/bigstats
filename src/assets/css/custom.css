@@ -68,7 +68,11 @@ a:hover {
   width: 45px;
   border-radius: 50%;
   padding: 2px;
-  border: 3px solid #166abb;
+  border: 3px solid #0e589e;
+}
+
+.avatar-cabecograma.active img {
+    border: 3px solid #1784eb;
 }
 
 .avatar-cabecograma {
@@ -168,9 +172,14 @@ a:hover {
   width: 150px;
   height: 150px;
   object-fit: cover;
-  border: 5px solid #fff;
+  border: 5px solid #5696ce;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+}
+
+.profile-avatar:hover {
+  border: 5px solid #96ceff;
+  transition: border-color 0.3s ease-in-out;
 }
 
 /* .verified-badge {
@@ -231,8 +240,8 @@ a:hover {
 }
 
 .btn-instagram:hover {
-  transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
 }
 
 .chart-container {
@@ -242,3 +251,16 @@ a:hover {
 }
 
 /* 2026 ends */
+
+/* black-dashboard.css | http://localhost/bigstats/src/assets/css/black-dashboard.css?v=33071a59d5ed0582472ab11350dee67b */
+
+.btn-primary {
+  background: #257af7;
+  background-image: linear-gradient(to bottom left, #5e72e4, #1d8cf8, #0520b7);
+  background-color: #0a28d4;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .btn-primary:active:focus, .btn-primary:active:hover, .btn-primary.active:focus, .btn-primary.active:hover {
+  background-color: #1d8cf8 !important;
+  background-image: -moz-linear-gradient(to bottom left, #5e72e4, #04c2e1, #5e72e4) !important;
+}
