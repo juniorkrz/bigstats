@@ -152,7 +152,15 @@ class Repository
 
         // Vinculando os parâmetros
         foreach ($params as $key => $value) {
-            $stmt->bindValue($key, $value);
+            if (is_bool($value)) {
+                $stmt->bindValue($key, $value, PDO::PARAM_BOOL);
+            } elseif (is_int($value)) {
+                $stmt->bindValue($key, $value, PDO::PARAM_INT);
+            } elseif ($value === null) {
+                $stmt->bindValue($key, null, PDO::PARAM_NULL);
+            } else {
+                $stmt->bindValue($key, $value, PDO::PARAM_STR);
+            }
         }
 
         // Executando a consulta
