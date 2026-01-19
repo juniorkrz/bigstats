@@ -61,7 +61,7 @@ $lastCommitHash = bin2hex(random_bytes(16));
                                  alt="Verificado">
                         </div>
                         <h2 class="participante mb-2" data="nome"></h2>
-                        <a href="#" class="btn btn-primary btn-round participante" data="instagram">
+                        <a href="#" target="_blank" class="btn btn-primary btn-round participante" data="instagram">
                             <span class="instagram-handle participante" data="instagram_username"></span>
                         </a>
                     </div>
