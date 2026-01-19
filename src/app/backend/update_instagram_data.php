@@ -10,133 +10,142 @@ use App\util\Repository;
 use App\util\Telegram;
 use Exception;
 
-// Verificar se o valor do sleep foi passado como argumento
-if (isset($argv[1])) {
-    $sleepTime = (int)$argv[1];  // Converter para inteiro
-} else {
-    exit;
-}
-
 require_once __DIR__ . "/../config.php";
 
-// Definir o nome do arquivo de log como o nome do script atual
-$runId = uniqid();
-$logFile = __DIR__ . '/' . basename(__FILE__, '.php') . '.log';
+/* ======================== CONFIG ======================== */
+
+$sleepTime = isset($argv[1]) ? (int)$argv[1] : exit;
+
+$runId   = uniqid();
+$logDir = '/var/www/logs';
+
+if (!is_dir($logDir)) {
+    mkdir($logDir, 0775, true);
+}
+
+$logFile = $logDir . '/' . basename(__FILE__, '.php') . '.log';
 
 
-// Função para registrar mensagens no log com data e hora
-function logMessage($message, $sendTelegram = false)
+/* ======================== LOGGER ======================== */
+
+function logMessage(string $message, bool $sendTelegram = false): void
 {
-    global $logFile;
-    global $runId;
+    global $runId, $logFile;
 
-    // Obter data e hora atuais
-    $dateTime = date('Y-m-d H:i:s');  // Formato: Ano-Mês-Dia Hora:Minuto:Segundo
+    $dateTime = date('Y-m-d H:i:s');
+    $entry = "[$dateTime][$runId] $message";
 
-    // Criar a mensagem com a data, hora e o conteúdo
-    $logEntry = "[$dateTime][$runId] $message";
-    echo $logEntry . PHP_EOL;
-
-    // Abrir o arquivo de log em modo de escrita
-    $file = fopen($logFile, 'a');
-    if ($file) {
-        fwrite($file, $logEntry . PHP_EOL);
-        fclose($file);
-    } else {
-        echo "Não foi possível abrir o arquivo de log.";
-    }
+    echo $entry . PHP_EOL;
+    file_put_contents($logFile, $entry . PHP_EOL, FILE_APPEND | LOCK_EX);
 
     if ($sendTelegram) {
-        Telegram::sendMessage($logEntry);
+        Telegram::sendMessage($entry);
     }
 }
+
+
+/* ======================== INIT ======================== */
 
 logMessage("Iniciando atualização de dados do Instagram, intervalo de $sleepTime segundos...", true);
 
 $instagramApi = new InstagramAPI();
-$repInstagramUser = new Repository(InstagramUser::class);
-$repInstagramUserHistory = new Repository(InstagramUserHistory::class);
 
-// Buscar participantes que não atualizam a mais de 60 minutos
-$now = date('Y-m-d H:i:s');
-$thirtyMinutesAgo = date('Y-m-d H:i:s', strtotime('-60 minutes', strtotime($now)));
+$repInstagramUser        = new Repository(InstagramUser::class);
+$repInstagramUserHistory = new Repository(InstagramUserHistory::class);
+$repParticipante         = new Repository(Participante::class);
+
+/* ======================== BUSCA DE USUÁRIOS ======================== */
+
+$limitDate = (new \DateTime('-60 minutes'))->format('Y-m-d H:i:s');
+
+/** Usuários desatualizados */
 $instagramUsers = $repInstagramUser->findByQuery(
-    "SELECT * FROM instagram_user WHERE updated_at < :thirtyMinutesAgo ORDER BY updated_at;",
-    ['thirtyMinutesAgo' => $thirtyMinutesAgo]
+    "SELECT * FROM instagram_user WHERE updated_at < :limitDate ORDER BY updated_at",
+    ['limitDate' => $limitDate]
 );
 
-// Busca participantes que nunca foram atualizados
-$repParticipante = new Repository(Participante::class);
+/** Participantes que ainda não existem na tabela instagram_user */
 $repParticipante->findByQuery(
     "SELECT p.*
      FROM bbb_participante p
-     LEFT JOIN instagram_user iu
-            ON iu.username = p.instagram
+     LEFT JOIN instagram_user iu ON iu.username = p.instagram
      WHERE iu.username IS NULL
        AND p.instagram IS NOT NULL
        AND p.instagram <> ''"
-    );
+);
 
 if (!$repParticipante->isEmpty()) {
-    $instagramUsers = [];
-
     foreach ($repParticipante->objects as $participante) {
-        $instagramUser = new InstagramUser();
-        $instagramUser->username = $participante->instagram;
-        $instagramUsers[] = $instagramUser;
+        $user = new InstagramUser();
+        $user->username = $participante->instagram;
+        $instagramUsers[] = $user; // adiciona, não sobrescreve
     }
-
 }
 
-try {
-    foreach ($instagramUsers as $instagramUser /* @var $instagramUser InstagramUser */) {
-        $username = $instagramUser->username;
-        $instagramUser = $instagramApi->getUserData($username);
+if (empty($instagramUsers)) {
+    logMessage("Nenhum usuário para atualizar.");
+    exit;
+}
 
+/* ======================== PROCESSAMENTO ======================== */
+
+try {
+    foreach ($instagramUsers as $i => $item) {
+
+        $username = $item->username;
+        $instagramUser = $instagramApi->getUserData($username);
         $apiUser = $instagramApi->getApiUser();
-        logMessage("API User: $apiUser->username - Consultou os dados do usuário $username");
+
+        logMessage("API User: {$apiUser->username} consultou $username");
 
         if (!$instagramUser) {
-            logMessage("Não foi possível obter os dados do usuário do Instagram.", true);
-            // Aguardar o tempo de sleep definido, se necessário
-            logMessage("Aguardando $sleepTime segundos...");
+            logMessage("Falha ao obter dados de $username", true);
             sleep($sleepTime);
             continue;
         }
 
+        /** Verifica se já existe */
         $repInstagramUser->resetSample();
         $repInstagramUser->sample->username = $username;
         $repInstagramUser->refindBySample();
 
         if ($repInstagramUser->isEmpty()) {
-            $saveResult = $repInstagramUser->save($instagramUser);
+            $instagramUser->created_at = date('Y-m-d H:i:s');
+            $rows = $repInstagramUser->save($instagramUser);
         } else {
-            $saveResult = $repInstagramUser->update($instagramUser);
+            $rows = $repInstagramUser->update($instagramUser);
         }
 
-        if ($saveResult > 0) {
-            logMessage("Dados do usuário $username salvos com sucesso!");
+        if ($rows > 0) {
+            logMessage("Usuário $username salvo com sucesso.");
         } else {
-            logMessage("Erro ao salvar os dados do usuário $username. Nenhuma linha foi afetada.", true);
+            logMessage("Nenhuma linha afetada ao salvar $username", true);
         }
 
+        /** Histórico */
         $history = new InstagramUserHistory();
         $history->fromInstagramUser($instagramUser);
-        $saveHistory = $repInstagramUserHistory->save($history);
 
-        if ($saveHistory > 0) {
-            logMessage("Histórico do usuário $username salvos com sucesso!");
+        $rowsHistory = $repInstagramUserHistory->save($history);
+
+        if ($rowsHistory > 0) {
+            logMessage("Histórico de $username salvo.");
         } else {
-            logMessage("Erro ao salvar o histórico do usuário $username. Nenhuma linha foi afetada.", true);
+            logMessage("Falha ao salvar histórico de $username", true);
         }
 
-        // Aguardar o tempo de sleep definido, se necessário
-        logMessage("Aguardando $sleepTime segundos...");
-        sleep($sleepTime);
+        $isLast = $i === array_key_last($instagramUsers);
+
+        if (!$isLast) {
+            sleep($sleepTime);
+        }
     }
+
 } catch (Exception $e) {
-    logMessage("Erro ao atualizar os dados do Instagram: " . $e->getMessage(), true);
-    logMessage("Username: " . $username, true);
+    logMessage("Erro geral: " . $e->getMessage(), true);
+    if (!empty($username)) {
+        logMessage("Username: $username", true);
+    }
 }
 
-logMessage("Atualização de dados do Instagram concluida.", true);
+logMessage("Atualização de dados do Instagram concluída.", true);
