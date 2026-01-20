@@ -220,6 +220,44 @@ class Repository
         return $stmt->execute();
     }
 
+    // Método para deletar todos os registros em $this->objects
+    public function deleteAll()
+    {
+        if ($this->isEmpty()) {
+            return false;
+        }
+
+        $pk = $this->primaryKey;
+        $ids = [];
+
+        foreach ($this->objects as $object) {
+            if (isset($object->$pk)) {
+                $ids[] = $object->$pk;
+            }
+        }
+
+        if (empty($ids)) {
+            return false;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $sql = "DELETE FROM {$this->table} WHERE {$pk} IN ($placeholders)";
+        $stmt = $this->pdo->prepare($sql);
+
+        foreach ($ids as $i => $id) {
+            $stmt->bindValue($i + 1, $id, is_int($id) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+
+        $result = $stmt->execute();
+
+        if ($result) {
+            $this->resetObjects();
+        }
+
+        return $result;
+    }
+
+
     // Método para buscar todos os registros
     public function findAll($options = null)
     {
