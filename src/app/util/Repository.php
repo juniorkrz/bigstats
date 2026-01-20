@@ -151,17 +151,7 @@ class Repository
         $stmt = $this->pdo->prepare($sql);
 
         // Vinculando os parâmetros
-        foreach ($params as $key => $value) {
-            if (is_bool($value)) {
-                $stmt->bindValue($key, $value, PDO::PARAM_BOOL);
-            } elseif (is_int($value)) {
-                $stmt->bindValue($key, $value, PDO::PARAM_INT);
-            } elseif ($value === null) {
-                $stmt->bindValue($key, null, PDO::PARAM_NULL);
-            } else {
-                $stmt->bindValue($key, $value, PDO::PARAM_STR);
-            }
-        }
+        $this->bindParams($stmt, $params);
 
         // Executando a consulta
         return $stmt->execute();
@@ -177,34 +167,39 @@ class Repository
         $sets = [];
         $params = [];
 
+        $columnTypes = $this->getColumnTypes();
+        $pk = $this->primaryKey;
+
         foreach ($properties as $property) {
             $propertyName = $property->getName();
             $value = $object->$propertyName;
 
-            // Ignorar valores nulos
-            if ($value !== null) {
+            if ($value !== null && $propertyName !== $pk) {
+
+                if (
+                    $value === '' &&
+                    isset($columnTypes[$propertyName]) &&
+                    !preg_match('/char|text/i', $columnTypes[$propertyName])
+                ) {
+                    $value = null;
+                }
+
                 $sets[] = "$propertyName = :$propertyName";
                 $params[":$propertyName"] = $value;
             }
         }
-
-        $pk = $this->primaryKey;
-
-        // Adicionar a chave primária aos parâmetros
-        /* $params[':' . $pk] = $object->$pk; */
 
         // Se não houver colunas para atualizar, lançar exceção
         if (empty($sets)) {
             throw new Exception("Nenhum campo válido para atualizar.");
         }
 
-        $setsList = implode(', ', $sets);
-        $sql = "UPDATE {$this->table} SET $setsList WHERE $pk = :{$pk}";
-
+        $sql = "UPDATE {$this->table} SET " . implode(', ', $sets) . " WHERE $pk = :$pk";
         $stmt = $this->pdo->prepare($sql);
-        foreach ($params as $key => $value) {
-            $stmt->bindValue($key, $value);
-        }
+
+        $params[":$pk"] = $object->$pk;
+
+        $this->bindParams($stmt, $params);
 
         return $stmt->execute();
     }
@@ -461,5 +456,20 @@ class Repository
         }
 
         return $array;
+    }
+
+    private function bindParams(\PDOStatement $stmt, array $params): void
+    {
+        foreach ($params as $key => $value) {
+            if (is_bool($value)) {
+                $stmt->bindValue($key, $value, PDO::PARAM_BOOL);
+            } elseif (is_int($value)) {
+                $stmt->bindValue($key, $value, PDO::PARAM_INT);
+            } elseif ($value === null) {
+                $stmt->bindValue($key, null, PDO::PARAM_NULL);
+            } else {
+                $stmt->bindValue($key, $value, PDO::PARAM_STR);
+            }
+        }
     }
 }
