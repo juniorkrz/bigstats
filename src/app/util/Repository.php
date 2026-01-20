@@ -80,6 +80,17 @@ class Repository
         return $this->objects[$key];
     }
 
+    public function getAllByAttribute($attribute, $value)
+    {
+        if ($this->isEmpty()) {
+            return null;
+        }
+
+        return array_filter($this->objects, function ($object) use ($attribute, $value) {
+            return $object->$attribute === $value;
+        });
+    }
+
     public function getLast()
     {
         if ($this->isEmpty()) {
@@ -154,7 +165,11 @@ class Repository
         $this->bindParams($stmt, $params);
 
         // Executando a consulta
-        return $stmt->execute();
+        if ($stmt->execute()) {
+            return $this->pdo->lastInsertId();
+        }
+
+        return false;
     }
 
 
@@ -218,40 +233,43 @@ class Repository
     // Método para deletar todos os registros em $this->objects
     public function deleteAll()
     {
-        if ($this->isEmpty()) {
-            return false;
-        }
-
         $pk = $this->primaryKey;
-        $ids = [];
+        $deletedIds = [];
+        $totalDeleted = 0;
 
-        foreach ($this->objects as $object) {
-            if (isset($object->$pk)) {
-                $ids[] = $object->$pk;
+        while (!$this->isEmpty()) {
+            $batch = array_slice($this->objects, 0, 50, true); // pega 50 objetos
+            $placeholders = [];
+            $params = [];
+
+            foreach ($batch as $index => $object) {
+                $placeholder = ":id_$index";
+                $placeholders[] = $placeholder;
+                $params[$placeholder] = $object->$pk;
+            }
+
+            $sql = "DELETE FROM {$this->table} WHERE $pk IN (" . implode(',', $placeholders) . ")";
+            $stmt = $this->pdo->prepare($sql);
+
+            if ($stmt->execute($params)) {
+                $deletedCount = $stmt->rowCount(); // quantidade de linhas afetadas
+                $totalDeleted += $deletedCount;
+
+                // Armazena os IDs excluídos
+                foreach ($batch as $index => $object) {
+                    $deletedIds[] = $object->$pk;
+                    unset($this->objects[$object->$pk]);
+                }
+            } else {
+                throw new Exception("Erro ao deletar lote de registros.");
             }
         }
 
-        if (empty($ids)) {
-            return false;
-        }
-
-        $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $sql = "DELETE FROM {$this->table} WHERE {$pk} IN ($placeholders)";
-        $stmt = $this->pdo->prepare($sql);
-
-        foreach ($ids as $i => $id) {
-            $stmt->bindValue($i + 1, $id, is_int($id) ? PDO::PARAM_INT : PDO::PARAM_STR);
-        }
-
-        $result = $stmt->execute();
-
-        if ($result) {
-            $this->resetObjects();
-        }
-
-        return $result;
+        return (object) [
+            'total_deleted' => $totalDeleted,
+            'deleted_ids' => $deletedIds
+        ];
     }
-
 
     // Método para buscar todos os registros
     public function findAll($options = null)
@@ -302,7 +320,7 @@ class Repository
         return $this->appendResultsToObjects($results);
     }
 
-    public function findBySample(object $sample = null)
+    public function findBySample(?object $sample = null)
     {
         if ($sample === null) {
             $sample = $this->sample;
@@ -361,11 +379,7 @@ class Repository
 
     private function appendResultsToObjects($results)
     {
-        $objects = $this->mapToObjects($results);
-
-        foreach ($objects as $key => $object) {
-            $this->objects[$key] = $object;
-        }
+        $this->objects = $this->mapToObjects($results);
 
         return $this->objects;
     }
@@ -456,6 +470,23 @@ class Repository
         }
 
         return $array;
+    }
+
+    public function toSelectData($id, $name)
+    {
+        if (!property_exists($this->sample, $id) || !property_exists($this->sample, $name)) {
+            throw new Exception("Os parâmetros $id e $name devem existir no objeto.");
+        }
+
+        $data = [];
+        foreach ($this->objects as $object) {
+            $data[] = [
+                "id" => $object->$id,
+                "name" => $object->$name
+            ];
+        }
+
+        return $data;
     }
 
     private function bindParams(\PDOStatement $stmt, array $params): void
