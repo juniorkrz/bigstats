@@ -12,6 +12,7 @@ class InstagramAccount
     public $created_at;
     public $updated_at;
     public $username;
+    public $password;
     public $rate_limited;
 
     public function __construct(
@@ -21,6 +22,7 @@ class InstagramAccount
         $created_at = null,
         $updated_at = null,
         $username = null,
+        $password = null,
         $rate_limited = null
     ) {
         $this->id = $id;
@@ -29,6 +31,7 @@ class InstagramAccount
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
         $this->username = $username;
+        $this->password = $password;
         $this->rate_limited = $rate_limited;
     }
 

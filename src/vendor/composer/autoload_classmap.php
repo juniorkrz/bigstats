@@ -14,6 +14,7 @@ return array(
     'App\\util\\Database' => $baseDir . '/app/util/Database.php',
     'App\\util\\InstagramAPI' => $baseDir . '/app/util/InstagramAPI.php',
     'App\\util\\Repository' => $baseDir . '/app/util/Repository.php',
+    'App\\util\\Security' => $baseDir . '/app/util/Security.php',
     'App\\util\\Telegram' => $baseDir . '/app/util/Telegram.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',

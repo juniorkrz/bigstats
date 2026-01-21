@@ -77,6 +77,7 @@ class ComposerStaticInit28feb3faf0d8147d69fe2bc232f960d6
         'App\\util\\Database' => __DIR__ . '/../..' . '/app/util/Database.php',
         'App\\util\\InstagramAPI' => __DIR__ . '/../..' . '/app/util/InstagramAPI.php',
         'App\\util\\Repository' => __DIR__ . '/../..' . '/app/util/Repository.php',
+        'App\\util\\Security' => __DIR__ . '/../..' . '/app/util/Security.php',
         'App\\util\\Telegram' => __DIR__ . '/../..' . '/app/util/Telegram.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
