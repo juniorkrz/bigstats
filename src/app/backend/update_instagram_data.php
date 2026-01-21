@@ -137,6 +137,7 @@ try {
         $isLast = $i === array_key_last($instagramUsers);
 
         if (!$isLast) {
+            logMessage("Aguardando $sleepTime segundos...");
             sleep($sleepTime);
         }
     }
